@@ -1,0 +1,28 @@
+<ion-header>
+
+<ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>GRAPHIQUE JOUR</ion-title>
+  </ion-navbar>
+
+  <nav>
+      <div class="container">
+          <ul>
+              <li><a [navPush]="'ChartsWeekPage'">Semaine</a></li>
+              <li><a [navPush]="'ChartsWeekPage'">Mois</a></li>
+              <li><a [navPush]="'ChartsWeekPage'">Année</a></li>
+          </ul>
+      </div>
+  </nav>
+<!--
+  <ion-toolbar color="secondary">
+    <ion-title><span class="date">{{chartsTitle}}</span></ion-title>
+  </ion-toolbar>
+-->
+</ion-header>
+
+<ion-content padding>
+  <div id="container" style="display: block; height: 100%"></div>
+</ion-content>

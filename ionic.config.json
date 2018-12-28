@@ -1,0 +1,7 @@
+{
+  "name": "Meteo-Correns",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

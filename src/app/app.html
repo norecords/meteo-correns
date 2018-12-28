@@ -1,0 +1,31 @@
+<ion-menu [content]="content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+      <button menuClose ion-item (click)="openPage('HomePage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        Direct
+      </button>
+      <button menuClose ion-item (click)="openPage('ChartsPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        Graphiques
+      </button>
+      <button menuClose ion-item (click)="openPage('ForecastPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        Prévisions
+      </button>
+      <button menuClose ion-item (click)="openPage('AlmanacPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        Almanach
+      </button>
+      <button menuClose ion-item (click)="openPage('AboutPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        À propos
+      </button>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

@@ -1,0 +1,72 @@
+<ion-header>
+
+<ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>ALMANACH</ion-title>
+</ion-navbar>
+
+<ion-toolbar color="secondary" class="titre">
+    <ion-title>
+      <ion-icon name="md-time"></ion-icon> <span class="date" text-uppercase>{{weather.dateTime}}</span>
+    </ion-title>
+</ion-toolbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <ion-card>
+    <ion-card-content>
+      <i class="wi wi-sunrise"></i> {{sun['sunrise']}}
+      <i class="wi wi-sunset"></i> {{sun['sunset']}}
+      ({{weather.daytimeDiff}}) <br> {{weather.fete}}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+       <div class="crd">
+          <h4><i class="wi wi-horizon"></i> Soleil</h4>
+          <div class="col-6">
+            <table>
+              <tr><td>Début de l'aube:</td><td>{{sun['startCivilTwilight']}}</td></tr>
+              <tr><td>Lever de soleil:</td><td>{{sun['sunrise']}}</td></tr>
+              <tr><td>Transit:</td><td>{{sun['transit']}}</td></tr>
+              <tr><td>Coucher de soleil:</td><td>{{sun['sunset']}}</td></tr>
+              <tr><td>Fin du crépuscule:</td><td>{{sun['endCivilTwilight']}}</td></tr>
+              <tr><td>Azimut:</td><td>{{sun['azimuth']}}</td></tr>
+              <tr><td>Altitude:</td><td>{{sun['altitude']}}</td></tr>
+              <tr><td>Ascension:</td><td>{{sun['rightAscension']}}</td></tr>
+              <tr><td>Déclinaison:</td><td>{{sun['declination']}}</td></tr>
+              <tr><td>Solstice:</td><td>{{sun['equinox']}}</td></tr>
+              <tr><td>Equinoxe:</td><td>{{sun['solstice']}}</td></tr>
+            </table>
+          </div>
+        </div>
+    </ion-card-content>
+  </ion-card>
+  
+  <ion-card>
+    <ion-card-content>
+       <div class="crd">
+          <h4><i class="wi wi-moon-waning-crescent-3"></i> Lune</h4>
+          <div class="col-6">
+            <table>
+              <tr><td>Lever:</td><td>{{moon['rise']}}</td></tr>
+              <tr><td>Transit:</td><td>{{moon['transit']}}</td></tr>
+              <tr><td>Coucher:</td><td>{{moon['set']}}</td></tr>
+              <tr><td>Azimuth:</td><td>{{moon['azimuth']}}</td></tr>
+              <tr><td>Altitude:</td><td>{{moon['altitude']}}</td></tr>
+              <tr><td>Ascension:</td><td>{{moon['rightAscension']}}</td></tr>
+              <tr><td>Déclinaison:</td><td>{{moon['declination']}}</td></tr>
+              <tr><td>Nouvelle Lune:</td><td>{{moon['newMoon']}}</td></tr>
+              <tr><td>Pleine Luse:</td><td>{{moon['fullMoon']}}</td></tr>
+              <tr><td>Phase:</td><td>{{moon['phase']}}<br />{{moon['fullness']}}</td></tr>
+            </table>
+          </div>
+       </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

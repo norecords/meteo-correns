@@ -1,0 +1,229 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/theming/
+
+// Font path is used to include ionicons,
+// roboto, and noto sans fonts
+$font-path: "../assets/fonts";
+
+
+// The app direction is used to include
+// rtl styles in your app. For more info, please see:
+// http://ionicframework.com/docs/theming/rtl-support/
+$app-direction: ltr;
+
+
+@import "ionic.globals";
+
+
+// Shared Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass variables found in Ionic's source scss files.
+// To view all the possible Ionic variables, see:
+// http://ionicframework.com/docs/theming/overriding-ionic-variables/
+
+
+// Named Color Variables
+// --------------------------------------------------
+// Named colors makes it easy to reuse colors on various components.
+// It's highly recommended to change the default colors
+// to match your app's branding. Ionic uses a Sass map of
+// colors so you can add, rename and remove colors as needed.
+// The "primary" color is the only required color in the map.
+
+$colors: (
+  primary:    #0099bc,
+  secondary:  #2d7d9a,
+  danger:     #f53d3d,
+  light:      #f4f4f4,
+  dark:       #222
+);
+
+
+// App iOS Variables
+// --------------------------------------------------
+// iOS only Sass variables can go here
+
+
+
+
+// App Material Design Variables
+// --------------------------------------------------
+// Material Design only Sass variables can go here
+
+
+
+
+// App Windows Variables
+// --------------------------------------------------
+// Windows only Sass variables can go here
+
+
+
+
+// App Theme
+// --------------------------------------------------
+// Ionic apps can have different themes applied, which can
+// then be future customized. This import comes last
+// so that the above variables are used and Ionic's
+// default are overridden.
+
+@import "ionic.theme.default";
+
+
+// Ionicons
+// --------------------------------------------------
+// The premium icon font for Ionic. For more info, please see:
+// http://ionicframework.com/docs/ionicons/
+
+@import "ionic.ionicons";
+
+
+// Fonts
+// --------------------------------------------------
+
+@import "roboto";
+@import "noto-sans";
+
+
+// CUSTOM
+
+
+.spin {
+  margin:0 auto;
+}
+.date {
+  font-size:1.7rem
+}
+.crd {
+ min-height:100%;
+ position:relative
+}
+.crd h4 {
+ font-weight:700;
+ font-size:.9rem;
+ letter-spacing:1px;
+ padding:.25rem .75rem;
+ margin:0;
+ color:#68768a;
+ text-transform:uppercase;
+ width:100%;
+ text-align:center
+}
+.crd h4 i {
+ font-size:1.4em;
+ width:1.4em;
+ text-align:center
+}
+.crd .crd-content {
+ width:100%;
+ display:inline-block
+}
+.weatherdata {
+ width:100%;
+ display:inline-block;
+ text-align:center;
+ font-size:1.8em
+}
+.crd .crd-content .weatherdata i {
+ text-align:center;
+ width:1.6em;
+ height:1.4em;
+ font-size:1.6em
+}
+.crd .crd-content .weatherdata_small {
+ font-size:1.15rem;
+ color:#000;
+ font-weight:500;
+ width:100%;
+ text-align:center;
+ display:block
+}
+.crd .crd-content .weatherdata_sub {
+ font-size:1.65rem;
+ color:#666666;
+ width:100%;
+ text-align:center;
+ display:block;
+ margin-top:.5rem
+}
+
+.ion-spinner-charts {
+  width: 150px;
+  height: 150px;
+  * {
+    stroke: #0099bc !important;
+  }
+
+}
+
+nav {
+ background:#2d7d9a
+}
+nav ul {
+ list-style-type:none;
+ margin:0;
+ padding:0;
+ position:relative;
+ display:-webkit-box;
+ display:-ms-flexbox;
+ display:flex;
+ -webkit-box-align:stretch;
+ -ms-flex-align:stretch;
+ align-items:stretch
+}
+nav ul li {
+ display:-webkit-box;
+ display:-ms-flexbox;
+ display:flex;
+ -webkit-box-align:stretch;
+ -ms-flex-align:stretch;
+ align-items:stretch;
+ text-align:center;
+ border-bottom:4px solid #2d7d9a
+}
+nav ul li.active {
+ border-bottom:4px solid #f7630c
+}
+nav ul li a {
+ display:block;
+ -webkit-box-flex:1;
+ -ms-flex:1 1 auto;
+ flex:1 1 auto;
+ height:100%;
+ padding:14px .85rem 18px .85rem;
+ text-decoration:none;
+ color:#f5f5f5;
+ font-weight:700;
+ letter-spacing:1px;
+ text-transform:uppercase;
+ -webkit-transition:all .2s;
+ transition:all .2s
+}
+nav ul li a:hover {
+ color:#fafafa;
+ background:#00b7c3
+}
+
+ nav {
+  overflow-x:scroll
+ }
+
+ table {
+  border-collapse:collapse;
+  border-spacing:0;
+  max-width:100%;
+  width:100%;
+  empty-cells:show;
+  font-size:15px;
+  line-height:24px
+ }
+
+  .yricon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: auto;
+  margin-right: auto;
+   height: 50px;
+   width: 50px
+ }

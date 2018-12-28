@@ -1,0 +1,108 @@
+<ion-header>
+  
+<ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>MÉTÉO CORRENS</ion-title>
+  </ion-navbar>
+
+  <ion-toolbar color="secondary">
+    <ion-title><span class="date" text-uppercase>{{weather.dateTime}}</span></ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+<ion-refresher (ionRefresh)="load($event)">
+  <ion-refresher-content
+    pullingIcon="arrow-dropdown"
+    pullingText="Tirer pour mettre à jour"
+    refreshingSpinner="circles"
+    refreshingText="Mise à jour...">
+  </ion-refresher-content>
+</ion-refresher>
+
+<ion-card>
+    <ion-card-content>
+       <div class="crd"> 
+         <div class="crd-content">
+           <span class="weatherdata"><h4><span [innerHtml]="symbol"></span> {{weather.desc}}</h4></span>
+         </div>
+       </div>
+    </ion-card-content>
+  </ion-card>
+
+<ion-card>
+  <ion-card-content>
+     <div class="crd"> 
+        <h4><i class="wi wi-thermometer"></i> Température extérieure</h4>
+       <div class="crd-content">
+          <span class="weatherdata">{{weather.outTemp}}°C</span>
+          <br><span class="weatherdata_sub">Ressenti : {{weather.windchill}}°C</span>
+       </div>
+     </div>
+  </ion-card-content>
+</ion-card>
+
+  <ion-card>
+    <ion-card-content>
+       <div class="crd">
+         <h4><i class="wi wi-humidity"></i> Humidité extérieure</h4>
+         <div class="crd-content">
+           <span class="weatherdata">{{weather.outHumidity}}%</span>
+         </div>
+       </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+       <div class="crd">
+         <h4><i class="wi wi-barometer"></i> Baromètre</h4>
+         <div class="crd-content">
+           <span class="weatherdata">{{weather.barometer}} hPa</span>
+           <br><span class="weatherdata_sub">Tendance : {{weather.barometerTrendData}}</span>
+         </div>
+       </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+       <div class="crd">
+         <h4><i class="wi wi-strong-wind"></i> Vent</h4>
+         <div class="crd-content">
+           <span class="weatherdata">{{weather.windSpeed}} km/h - {{weather.windDirText}}</span>
+           <br><span class="weatherdata"><i class="{{weather.windIcon}}"></i> {{weather.windDir}}° </span>
+           <br><span class="weatherdata_sub">Rafale : {{weather.windGust}} km/h</span>
+         </div>
+       </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+       <div class="crd">
+         <h4><i class="wi wi-umbrella"></i> Pluie</h4>
+         <div class="crd-content">
+           <span class="weatherdata">{{weather.rainSum}}</span>
+           <br><span class="weatherdata_sub">Taux de pluie : {{weather.rainRate}} mm/h</span>
+         </div>
+       </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+       <div class="crd">
+         <h4><i class="wi wi-fire"></i> Indice UV</h4>
+         <div class="crd-content">
+           <span class="weatherdata">{{weather.UV}}</span>
+         </div>
+       </div>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
