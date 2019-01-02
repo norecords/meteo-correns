@@ -62,51 +62,52 @@ export class ChartsPage {
    
         if(this.weather['0']['outTemp'].length > 0) {
    
+
           for(let i = 0; i < this.weather['0']['outTemp'].length; i++) {
         outTemp.push(
-                [this.weather['0']['outTemp'][i]['0'], this.weather['0']['outTemp'][i]['1']]
+                [this.weather['13']['dateTime'][i], this.weather['0']['outTemp'][i]]
             );
           }
    
           for(let i = 0; i < this.weather['1']['dewpoint'].length; i++) {
             dewpoint.push(
-              [this.weather['1']['dewpoint'][i]['0'], this.weather['1']['dewpoint'][i]['1']]
+              [this.weather['13']['dateTime'][i], this.weather['1']['dewpoint'][i]]
             );
           }
    
           for(let i = 0; i < this.weather['2']['windchill'].length; i++) {
             windchill.push(
-              [this.weather['2']['windchill'][i]['0'], this.weather['2']['windchill'][i]['1']]
+              [this.weather['13']['dateTime'][i], this.weather['2']['windchill'][i]]
             );
           }
    
           for(let i = 0; i < this.weather['3']['UV'].length; i++) {
             UV.push(
-              [this.weather['3']['UV'][i]['0'], this.weather['3']['UV'][i]['1']]
+              [this.weather['13']['dateTime'][i], this.weather['3']['UV'][i]]
             );
           }
    
           for(let i = 0; i < this.weather['4']['outHumidity'].length; i++) {
             outHumidity.push(
-              [this.weather['4']['outHumidity'][i]['0'], this.weather['4']['outHumidity'][i]['1']]
+              [this.weather['13']['dateTime'][i], this.weather['4']['outHumidity'][i]]
             );
           }
    
           for(let i = 0; i < this.weather['5']['barometer'].length; i++) {
             barometer.push(
-              [this.weather['5']['barometer'][i]['0'], this.weather['5']['barometer'][i]['1']]
+              [this.weather['13']['dateTime'][i], this.weather['5']['barometer'][i]]
             );
           }
    
           for(let i = 0; i < this.weather['6']['windSpeed'].length; i++) {
             windSpeed.push(
-              [this.weather['6']['windSpeed'][i]['0'], this.weather['6']['windSpeed'][i]['1']]
+              [this.weather['13']['dateTime'][i], this.weather['6']['windSpeed'][i]]
             );
           }
    
           for(let i = 0; i < this.weather['7']['windGust'].length; i++) {
             windGust.push(
-              [this.weather['7']['windGust'][i]['0'], this.weather['7']['windGust'][i]['1']]
+              [this.weather['13']['dateTime'][i], this.weather['7']['windGust'][i]]
             );
           }
    
@@ -128,13 +129,13 @@ export class ChartsPage {
    
           for(let i = 0; i < this.weather['10']['argensNiv'].length; i++) {
             argensNiv.push(
-              [this.weather['10']['argensNiv'][i]['0'], this.weather['10']['argensNiv'][i]['1']]
+              [this.weather['14']['dateHydro'][i], this.weather['10']['argensNiv'][i]]
             );
           }
    
           for(let i = 0; i < this.weather['11']['argensDeb'].length; i++) {
             argensDeb.push(
-              [this.weather['11']['argensDeb'][i]['0'], this.weather['11']['argensDeb'][i]['1']]
+              [this.weather['14']['dateHydro'][i], this.weather['11']['argensDeb'][i]]
             );
           }
    
