@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
-import { Title } from '@angular/platform-browser';
 import { ApiProvider } from '../../providers/api/api';
 
 @IonicPage()
@@ -14,13 +13,8 @@ export class HomePage {
   loading: any;
   symbol: string;
 
-  constructor(private _title: Title, public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) { 
+  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) { 
   }
-
-  ionViewDidEnter() {
-    this._title.setTitle('Conditions météorologiques en direct - Météo Correns');
-  }
-
 
   load(refresher) {
     setTimeout(() => {
@@ -29,6 +23,7 @@ export class HomePage {
     }, 20000);
     this.apiProvider.getLive().subscribe(data => { 
       this.weather = data 
+      this.symbol = '<img class="yricon" src="assets/imgs/yr/' + this.weather['icon'] + '.png">'
       refresher.complete()
     });
 

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
-import { Title } from '@angular/platform-browser';
 import { ApiProvider } from '../../providers/api/api'; // API provider
 
 @IonicPage()
@@ -14,11 +13,7 @@ export class AlmanacPage {
   sun = [];
   moon = [];
 
-  constructor(private _title: Title, public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {}
-
-  ionViewDidEnter() {
-    this._title.setTitle('Calendrier solaire et lunaire - Météo Correns');
-  }
+  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {}
 
   ionViewDidLoad() {
 

@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
-import { Title } from '@angular/platform-browser';
-// API:
-import { ApiProvider } from '../../providers/api/api' // Import our provider. Also included in home.module.ts file
+import { ApiProvider } from '../../providers/api/api' // Import our provider. Also included in charts-week.module.ts file
 
 declare var Highcharts : any;
 
@@ -14,11 +12,7 @@ declare var Highcharts : any;
 
 export class ChartsWeekPage {
 
-  constructor(private _title: Title, public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {}
-
-  ionViewDidEnter() {
-    this._title.setTitle('Graphique semaine (7 jours) - Météo Correns');
-  }
+  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {}
 
   data: void;
   weather = [];

@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams, Slides } from 'ionic-angular';
-import { Title } from '@angular/platform-browser';
 import { ApiProvider } from '../../providers/api/api';
 
 @IonicPage()
@@ -17,11 +16,7 @@ export class ForecastPage {
   symbol0: any; symbol1: any; symbol2: any; symbol3: any; symbol4: any; symbol5: any; symbol6: any; symbol7: any; symbol8: any; symbol9: any;
   loading: any;
   
-  constructor(private _title: Title, public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController,private apiProvider: ApiProvider) { }
-
-  ionViewDidEnter() {
-    this._title.setTitle('Prévisions météorologiques sur 10 jours - Météo Correns');
-  }
+  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController,private apiProvider: ApiProvider) { }
   
   public goToSlide(num) {
     this.slides.slideTo(num, 500);

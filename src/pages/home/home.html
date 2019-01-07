@@ -29,8 +29,11 @@
       <ion-card>
         <ion-card-content>
           <div class="crd"> 
-            <div class="crd-content">
+            <div class="crd-content"> 
               <span class="weatherdata"><h4><span [innerHtml]="symbol"></span> {{weather.desc}}</h4></span>
+              <span class="weatherdata"><h4><i class="wi wi-sunrise"></i> {{weather.sunrise}}
+                <i class="wi wi-sunset"></i> {{weather.sunset}}
+                ({{weather.daytimeDiff}}) </h4></span>
             </div>
           </div>
         </ion-card-content>

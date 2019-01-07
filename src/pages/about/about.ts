@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Title } from '@angular/platform-browser';
 
 /**
  * Generated class for the AboutPage page.
@@ -16,11 +15,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class AboutPage {
 
-  constructor(private _title: Title, public navCtrl: NavController, public navParams: NavParams) {
-  }
-
-  ionViewDidEnter() {
-    this._title.setTitle('À propos ... - Météo Correns');
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
