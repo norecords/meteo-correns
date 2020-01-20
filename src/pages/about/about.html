@@ -8,12 +8,35 @@
 </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
+  
+  <ion-card>
+    <ion-card-content>
+      <p>Cette application est automatiquement mis à jour en temps réel (toutes les 20 secondes) avec les observations météo de la station météorologique personnelle BYOWS ( Build Your Own Weather Station) de la fondation Raspberry Pi.
+<br>Nous sommes situé à Correns (83570) dans le Var en France.</p>
 
-  <ion-row justify-content-center align-items-center style="height: 100%">
-    INFO
-  </ion-row>
-
+<p>Les données météorologiques sont reçues par un Raspberry pi par le biais d'un broker (MQTT, Mosquitto pour les intimes), et traitées par le logiciel météo weewx pour les archives et pour l'alimentation du site Web.
+<br>La station météo fournit les lectures suivantes:</p>
+<ul>
+    <li>Température</li>
+    <li>Humidité</li>
+    <li>Vitesse du vent</li>
+    <li>Direction du vent</li>
+    <li>Les précipitations</li>
+    <li>UV</li>
+    <li>Pression barométrique</li>
+</ul>
+<ul>
+    <li>Server uptime: 76 jours, 9 heures, 30 minutes</li>
+    <li>WeeWX uptime: 26 jours, 8 heures, 57 minutes</li>
+    <li>WeeWX version: 3.9.2</li>
+    <li>Météo Correns app: 0.0.2</li>
+    <li>Ionic Framework: 3.9.2</li>
+    <li>Prévisions météo par Darksky</li>
+    <li>Carte radar par Windy</li>
+</ul>
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>
 

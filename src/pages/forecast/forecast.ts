@@ -11,6 +11,7 @@ import { ApiProvider } from '../../providers/api/api';
 export class ForecastPage {
   weather = []; /* declare live as array */
   @ViewChild('slides') slides: Slides;
+
   selected0: any; selected1: any; selected2: any; selected3: any; selected4: any; selected5: any; selected6: any; selected7: any; selected8: any; selected9: any;
   day0: any; day1: any; day2: any; day3: any; day4: any; day5: any; day6: any; day7: any; day8: any; day9: any;
   symbol0: any; symbol1: any; symbol2: any; symbol3: any; symbol4: any; symbol5: any; symbol6: any; symbol7: any; symbol8: any; symbol9: any;
@@ -27,7 +28,7 @@ export class ForecastPage {
     if (currentIndex == 0) selected = 'active';
      return selected
   }
-  
+
   slideChanged() {
     let previousIndex = this.slides.getPreviousIndex();
     let currentIndex = this.slides.getActiveIndex();

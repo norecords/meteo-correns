@@ -10,9 +10,9 @@ import 'rxjs/add/observable/throw';
 export class ApiProvider {
 
   constructor(private http: Http) { }
-
+// https://meteo.correns.org/api/app.php?q=live
   getLive() {
-    return this.http.get('https://meteo.correns.org/api/app.php?q=live')
+    return this.http.get('https://meteo.correns.org/api/app.php?q=weewxdata')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)

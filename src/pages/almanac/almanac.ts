@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { IonicPage, LoadingController, NavController, NavParams, Content } from 'ionic-angular';
 import { ApiProvider } from '../../providers/api/api'; // API provider
 
 @IonicPage()
@@ -9,11 +9,19 @@ import { ApiProvider } from '../../providers/api/api'; // API provider
 })
 export class AlmanacPage {
 
+  @ViewChild(Content) content: Content;
+
+  scrollToTop() {
+    this.content.scrollToTop();
+  }
+
   weather = []; 
   sun = [];
   moon = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {
+
+  }
 
   ionViewDidLoad() {
 
