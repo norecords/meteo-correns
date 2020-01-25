@@ -48,8 +48,8 @@
 
 <ion-grid no-padding>
   <ion-row>
-    <ion-col col-sm-12 col-md-3 col-lg-3>
-      <ion-card>
+    <ion-col col-sm-12 col-md-4 col-lg-4>
+      <ion-card style="min-width: 224px;">
         <ion-card-content>
           <div class="crd"> 
             <div class="crd-content">
@@ -57,115 +57,112 @@
               <span class="weatherdata"><h4><i class="wi wi-sunrise"></i> {{weather.sunrise}}
                   <i class="wi wi-sunset"></i> {{weather.sunset}}
                   ({{weather.daytimeDiff}}) </h4></span> 
-              -->                  
-              <span class="weatherdata"><span [innerHtml]="symbol"></span></span>
-              <span class="weatherdata"><h4> {{summary}}</h4></span>
+              -->       
+              <div class="summary">          
+              <table>
+                <tr>
+                  <td>
+                    <span class="dkIcon" [innerHTML]="symbol"></span>
+                    <span class="weatherdata"><h4> {{summary}}</h4></span>
+                  </td>
+                  <td style="min-width: 135px;">
+                    <span class="weatherdataTemp" [innerHTML]="outTemp_C" [style.color]="outTempColor"></span>
+                    <br><span class="weatherdata_sub" [innerHTML]="appTemp_C"></span>
+                    <table>
+                    <tr>
+                      <td><span class="weatherdata_sub" [innerHTML]="dayOutTempMax"></span></td>
+                      <td><span class="weatherdata_sub" [innerHTML]="dayOutTempMin"></span></td>
+                    </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              </div>
             </div>
           </div>
         </ion-card-content>
       </ion-card>
     </ion-col>
-    <ion-col col-sm-12 col-md-3 col-lg-3>
+    <ion-col col-sm-12 col-md-4 col-lg-4>
       <ion-card>
         <ion-card-content>
-          <div class="crd"> 
-            <h4><i class="wi wi-thermometer"></i> Température extérieure</h4>
+          <div class="crd">
             <div class="crd-content">
-              <span class="weatherdata"><span [innerHTML]="outTemp_C"></span></span>
-              <br><span class="weatherdata_sub">Ressenti : <span [innerHTML]="appTemp_C"></span></span>
+              <div class="compass">
+                <div class="direction">
+                  <span class="curwinddir">{{windCompass}}</span>
+                  <span class="curwinddeg" [innerHTML]="windDir"></span>
+                </div>
+                <div class="arrow" [style.transform]="windArrow"></div>
+              </div>
+              <br>
+              <span class="weatherdata"><i class="wi wi-strong-wind"></i> {{windSpeed_kph}}</span>
+              <br><span class="weatherdata_sub">Rafale : {{windGust_kph}}</span>
             </div>
           </div>
+
+
+
         </ion-card-content>
       </ion-card>
     </ion-col>
  
-    <ion-col col-sm-12 col-md-3 col-lg-3>
+    <ion-col col-sm-12 col-md-4 col-lg-4>
       <ion-card>
         <ion-card-content>
           <div class="crd">
-            <h4><i class="wi wi-humidity"></i> Humidité extérieure</h4>
             <div class="crd-content">
-              <span class="weatherdata">{{outHumidity}}</span>
-            </div>
+              <table>
+            <tr>
+              <td><h2><i class="wi wi-dust"></i> Visibilité</h2></td>
+              <td><span class="weatherdata_sub">{{visibility}}</span></td>
+            </tr>
+            <tr>
+              <td><h2><i class="wi wi-cloud-up"></i> Base nuage</h2></td>
+              <td><span class="weatherdata_sub">{{cloudbase}}</span></td>
+            </tr>
+            <tr>
+              <td><h2><i class="wi wi-umbrella"></i> Pluie</h2></td>
+              <td><span class="weatherdata_sub">{{dayRain_cm}} <br> {{rainRate_cm_per_hour}}</span></td>
+            </tr>
+            <tr>
+              <td><h2><i class="wi wi-humidity"></i> Humidité</h2></td>
+              <td><span class="weatherdata_sub">{{outHumidity}}</span></td>
+            </tr>
+            <tr>
+              <td><h2><i class="wi wi-barometer"></i> Baromètre</h2></td>
+              <td><span class="weatherdata_sub">{{barometer_mbar}}</span>
+                <!-- <br><span class="weatherdata_sub">Tendance : {{weather.barometerTrendData}}</span> -->
+              </td>
+            </tr>
+            <tr>
+              <td><h2><i class="wi wi-thermometer-exterior"></i> Point de rosée</h2></td>
+              <td><span class="weatherdata_sub" [innerHTML]="dewpoint_C"></span></td>
+            </tr>
+            <tr>
+              <td><h2><i class="wi wi-fire"></i> Indice UV</h2></td>
+              <td><span class="weatherdata_sub"> {{UV}}</span></td>
+            </tr>
+          </table>
+        </div>
           </div>
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-    <ion-col col-sm-12 col-md-3 col-lg-3>
-      <ion-card>
-        <ion-card-content>
+
+          <!--
           <div class="crd">
-            <h4><i class="wi wi-barometer"></i> Baromètre</h4>
             <div class="crd-content">
-              <span class="weatherdata">{{barometer_mbar}}</span>
-              <br><span class="weatherdata_sub">Tendance : {{weather.barometerTrendData}}</span>
+              <div class="hidden-xs hidden-sm">
+              <span class="weatherdata_sub">blablalba..</span>
+              </div>
             </div>
           </div>
+        -->
+
         </ion-card-content>
       </ion-card>
     </ion-col>
  </ion-row>
 
- <ion-row>
-    <ion-col col-sm-12 col-md-3 col-lg-3>
-      <ion-card>
-        <ion-card-content>
-          <div class="crd">
-            <h4><i class="wi wi-strong-wind"></i> Vent</h4>
-            <div class="crd-content">
-              <span class="weatherdata">{{windSpeed_kph}} - {{windCompass}}</span>
-              <br><span class="weatherdata"><i class="{{weather.windIcon}}"></i> <span [innerHTML]="windDir"></span> </span>
-              <br><span class="weatherdata_sub">Rafale : {{windGust_kph}}</span>
-            </div>
-          </div>
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
- 
-    <ion-col col-sm-12 col-md-3 col-lg-3>
-      <ion-card>
-        <ion-card-content>
-          <div class="crd">
-            <h4><i class="wi wi-umbrella"></i> Pluie</h4>
-            <div class="crd-content">
-              <span class="weatherdata">{{dayRain_cm}}</span>
-              <br><span class="weatherdata_sub">Taux de pluie : {{rainRate_cm_per_hour}}</span>
-            </div>
-          </div>
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-    <ion-col col-sm-12 col-md-3 col-lg-3>
-        <ion-card>
-          <ion-card-content>
-            <div class="crd">
-              <h4><i class="wi wi-fire"></i> Indice UV</h4>
-              <div class="crd-content">
-                <span class="weatherdata">{{UV}}</span>
-              </div>
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    <ion-col col-sm-12 col-md-3 col-lg-3>
-        <ion-card>
-          <ion-card-content>
-            <div class="crd">
-              <h4><i class="wi wi-thermometer-exterior"></i> Point de rosée</h4>
-              <div class="crd-content">
-                <span class="weatherdata"><span [innerHTML]="dewpoint_C"></span></span>
-                <br>{{connectStatus}}
-                <div class="hidden-xs hidden-sm">
-                <span class="weatherdata_sub">blablalba..</span>
-                </div>
-              
-              </div>
-            </div>
-          </ion-card-content>
-        </ion-card>
-    </ion-col>
-  </ion-row>
-  
+
 
 
 </ion-grid>

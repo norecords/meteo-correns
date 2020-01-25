@@ -87,5 +87,104 @@ page-home {
         padding-left: 36px;
       } 
 
+      .dkIcon img{
+        margin-left: auto;
+        margin-right: auto;
+         max-height: 150px;
+         max-width: 150px;
+         width:100%;
+       }
+
+       /* Compass from belchertown style.css */
+       .compass {
+        display: block;
+        width: 100px;
+        height: 100px;
+        border-radius: 100%;
+        position: relative;
+        color: #555;
+        border: solid #808080 5px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+    
+    .compass:before {
+        font-weight: bold;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        font-size: 14px;
+        top: -2px;
+    }
+      
+    .direction {
+        height: 100%;
+        width: 100%;
+        display: block;
+        /* background: #f2f6f5; */
+        /* background: -moz-linear-gradient(top, #f2f6f5 0%, #cbd5d6 100%); */
+        /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f2f6f5), color-stop(100%, #cbd5d6)); */
+        /* background: -webkit-linear-gradient(top, #f2f6f5 0%, #cbd5d6 100%); */
+        /* background: -o-linear-gradient(top, #f2f6f5 0%, #cbd5d6 100%); */
+        border-radius: 100%;
+    }
+    
+    .direction .curwinddir {
+        font-size: 25px;
+        margin-top: 10px;
+        display: block;
+    }
+    .direction .curwinddeg {
+        font-size: 21px;
+    }
+    
+    .arrow {
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: absolute;
+        top: 0;
+        transition: -webkit-transform 1s ease-in;
+    }
+    .arrow:after {
+        content: "";
+        width: 0;
+        height: 0;
+        /* border-left: 5px solid transparent; */
+        /* border-right: 5px solid transparent; */
+        /* border-bottom: 10px solid red; */
+        /* top: -6px; */
+        /* left: 50%; */
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        /* border-bottom: 21px solid red; */
+        border-top: 21px solid red;
+        position: absolute;
+        top: -10px;
+        left: 38px;
+        /* margin-left: -5px; */
+        z-index: 99;
+    }
+
+    .summary {
+      position: relative;
+      left: -5px;
+      margin-top: 25px;
+      margin-bottom: auto;
+     }
+
+     .weatherdataTemp {
+      width:100%;
+      display:inline-block;
+      text-align:center;
+      font-size:45px;
+     }
+
+     .outtempunitlabelsuper {
+      top:-1.0em;
+      font-size:50%;
+    }
+
       
 }
