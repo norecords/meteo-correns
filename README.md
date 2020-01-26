@@ -1,4 +1,4 @@
-# MÉTÉO CORRENS - Ionic 3, Angular 5, RxJS, Highstock.js
+# MÉTÉO CORRENS - Ionic 3, Angular 5, RxJS, ngx-mqtt, Highstock.js
 This is the first version of the app and it's fully uncommented ! :P
 
 TODO: 
@@ -21,15 +21,19 @@ $ npm install
 ```
 Test the App in your Browser
 ```bash
-$ ionic serve -l
+$ ionic serve -c
 ```
 
 ### Third party
 This project use:
+- DIY weather station BYOWS -> https://projects.raspberrypi.org/en/projects/build-your-own-weather-station/
+- Weewx as backend for the weather station -> http://www.weewx.com/
+- Mosquitto as mqtt broker -> https://mosquitto.org/
 - HighStock by HighCharts -> https://www.highcharts.com/products/highstock/
 - Weather Icons -> https://erikflowers.github.io/weather-icons/
 - Forecast Weather Symbol by [yr.no](https://www.yr.no/) -> https://github.com/YR/weather-symbols
 - Weather forecast from Yr, delivered by the Norwegian Meteorological Institute and NRK -> [Forecast Page](http://www.yr.no/place/France/Provence-Alpes-Côte_d’Azur/Correns)
+and many other things..
 
 
 ### License

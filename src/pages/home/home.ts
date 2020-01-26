@@ -41,6 +41,18 @@ export class HomePage {
   cloudbase: string;
   dayOutTempMax: string;
   dayOutTempMin: string;
+  dayWindAvg: string;
+  dayWindMax: string;
+  dayRainSum: string;
+  dayRainRateMax: string;
+  monthRainRateMax: string;
+  monthOutTempMax: string;
+  monthOutTempMin: string;
+  monthWindAvg: string;
+  monthWindMax: string;
+  monthRainSum: string;
+  dateToday: string;
+  dateMonth: string;
 
   private subs : Subscription;   // MQTT sub
 
@@ -76,16 +88,24 @@ export class HomePage {
 
   } // end of constructor
   
-  // Transform degrees in cardinal point
+  // Transform mqtt value windDir degree in cardinal point
   private wind_cardinals(deg) {
     var directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO','N2']
     var cardinal = directions[Math.round(deg / 22.5)];
     if (cardinal == 'N2') cardinal = 'N';
     return cardinal;
   }
+
+  // Replace unit . by ,
   private replace_point(str) {
     var re = '.'; 
     var newstr = str.replace(re, ','); 
+    return newstr;
+  }
+
+  // Capitalize moment first letter
+  private capitalizeFirstLetter(str) {
+    var newstr = str.substring(0, 1).toUpperCase() + str.substring(1);
     return newstr;
   }
 
@@ -125,6 +145,7 @@ export class HomePage {
     return color;
   }
 
+  // load main Json
   private loadJson() {
     let loader = this.loadingCtrl.create({
       content: '<h2>Chargement des données</h2>Téléchargement en cours...'
@@ -140,8 +161,10 @@ export class HomePage {
       this.weather = data;
       this.symbol = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
       this.summary = this.weather['current']['summary'];
-      this.dateTime = this.weather['current']['datetime_raw'];
-      this.dateTime = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
+      var dateRaw = this.weather['current']['datetime_raw'];
+      this.dateTime = moment.unix(dateRaw).format('dddd Do MMMM YYYY LTS');
+      this.dateToday = this.capitalizeFirstLetter(moment.unix(dateRaw).format('dddd Do MMMM YYYY'));
+      this.dateMonth = this.capitalizeFirstLetter(moment.unix(dateRaw).format('MMMM YYYY'));
       this.outTemp_C = this.weather['current']['outTemp_formatted'] + "<sup class='outtempunitlabelsuper'>°C</sup>";
       this.outTempColor = this.temp_colorize(parseFloat(this.weather['current']['outTemp_formatted']));
       this.appTemp_C = 'Ressenti: ' + this.weather['current']['appTemp'];
@@ -158,24 +181,46 @@ export class HomePage {
       this.UV = this.weather['current']['uv'];
       this.visibility = this.weather['current']['visibility'];
       this.cloudbase = this.weather['current']['cloudbase'];
-      this.dayOutTempMax = '<br>maxi<br>' + this.weather['current']['dayOutTempMax'];
-      this.dayOutTempMin = '<br>mini<br>' + this.weather['current']['dayOutTempMin'];
+      this.dayOutTempMax = this.weather['day']['outTempMax'];
+      this.dayOutTempMin = this.weather['day']['outTempMin'];
+      this.dayWindAvg = this.weather['day']['windAvg'];
+      this.dayWindMax = this.weather['day']['windMax'];
+      this.dayRainSum = this.weather['day']['rainSum'];
+      this.dayRainRateMax = this.weather['day']['rainRateMax'];
+      this.monthOutTempMax = this.weather['month']['outTempMax'];
+      this.monthOutTempMin = this.weather['month']['outTempMin'];
+      this.monthWindAvg = this.weather['month']['windAvg'];
+      this.monthWindMax = this.weather['month']['windMax'];
+      this.monthRainSum = this.weather['month']['rainSum'];
+      this.monthRainRateMax = this.weather['month']['rainRateMax'];
 
       // Dismiss loader
       if (this.weather['current']['datetime_raw'] =! null) loader.dismiss();
     });   
   }
 
-  // Reload summary every 5 minutes
+  // Reload summaries every 5 minutes
   private reloadJson() {
     setInterval(() => {
       this.apiProvider.getLive().subscribe(data => { 
         this.weather = data;
-        this.symbol = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
-        this.summary = this.weather['current']['summary'];
-        this.dayOutTempMax = '<br>maxi<br>' + this.weather['current']['dayOutTempMax'];
-        this.dayOutTempMin = '<br>mini<br>' + this.weather['current']['dayOutTempMin'];
-        console.log('summary, symbol and dayOutTemp updated');
+        if (this.weather['current']['datetime_raw'] =! null) {
+          this.symbol = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
+          this.summary = this.weather['current']['summary'];
+          this.dayOutTempMax = this.weather['day']['outTempMax'];
+          this.dayOutTempMin = this.weather['day']['outTempMin'];
+          this.dayWindAvg = this.weather['day']['windAvg'];
+          this.dayWindMax = this.weather['day']['windMax'];
+          this.dayRainSum = this.weather['day']['rainSum'];
+          this.dayRainRateMax = this.weather['day']['rainRateMax'];
+          this.monthOutTempMax = this.weather['month']['outTempMax'];
+          this.monthOutTempMin = this.weather['month']['outTempMin'];
+          this.monthWindAvg = this.weather['month']['windAvg'];
+          this.monthWindMax = this.weather['month']['windMax'];
+          this.monthRainSum = this.weather['month']['rainSum'];
+          this.monthRainRateMax = this.weather['month']['rainRateMax'];
+          console.log('summaries and symbol updated');
+        }
       });
     }, 300000); // 5 minutes
   }
