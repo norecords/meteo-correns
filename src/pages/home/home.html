@@ -7,21 +7,21 @@
   </ion-navbar>
 
   <ion-toolbar color="secondary">
-    <div *ngIf = "!showOnline && showOffline">
+    <div *ngIf = "!live['showOnline'] && live['showOffline']">
       <div class="sonar-wrapper">
         <div class="sonar-closed">
         </div>
       </div>
     </div>
     
-    <div *ngIf = "!showOnline && !showOffline">
+    <div *ngIf = "!live['showOnline'] && !live['showOffline']">
       <div class="sonar-wrapper">
         <div class="sonar-wait">
         </div>
       </div>
     </div>
     
-    <div *ngIf = "showOnline">
+    <div *ngIf = "live['showOnline']">
       <div class="sonar-wrapper">
         <div class="sonar-emitter">
           <div class="sonar-wave"></div>

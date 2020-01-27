@@ -13,46 +13,45 @@ import 'moment/locale/fr';
 })
 
 export class HomePage {
-  showOnline: boolean = false;
-  showOffline: boolean = true;
-  connectStatus : string = "Connection en cours...";
   loop = []; // mqtt loop
-  dateTime : any; // use to convert unix epoch to date
-  weather = []; // json array
-  loading: any; // loader
+  weather = []; // json array  
   live = []; // live array
   summaries = []; // summaries array
+  loading: any; // loader
+  dateTime : any; // use to convert unix epoch to date
 
   private subs : Subscription;   // MQTT sub
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider, private mqttService: MqttService) { 
-
+    this.live['connectStatus'] = 'Connection en cours...';
+    this.live['showOffline'] = true;
+    this.live['showOnline'] = false;
     this.mqttService.onConnect.subscribe((e) => {
       console.log('onConnect', e);
       if(e['cmd'] == 'connack') {
-        this.connectStatus = "Connecté. En attente de données...";
-        this.showOffline = false;
-        this.showOnline = false;
+        this.live['connectStatus'] = "Connecté. En attente de données...";
+        this.live['showOffline'] = false;
+        this.live['showOnline'] = false;
         console.log('MQTT Connected');
       }
     });
     this.mqttService.onError.subscribe((e) => {
         console.log('onError', e);
-        this.connectStatus = "Erreur de connection..."
-        this.showOffline = true;
-        this.showOnline = false;
+        this.live['connectStatus'] = "Erreur de connection..."
+        this.live['showOffline'] = true;
+        this.live['showOnline'] = false;
     });
     this.mqttService.onClose.subscribe(() => {
         console.log('onClose');
-        this.connectStatus = "Connection fermée."
-        this.showOffline = true;
-        this.showOnline = false;
+        this.live['connectStatus'] = "Connection fermée."
+        this.live['showOffline'] = true;
+        this.live['showOnline'] = false;
     });
     this.mqttService.onReconnect.subscribe(() => {
         console.log('onReconnect');
-        this.connectStatus = "Nouvelle tentative de connection."
-        this.showOffline = false;
-        this.showOnline = false;
+        this.live['connectStatus'] = "Nouvelle tentative de connection."
+        this.live['showOffline'] = false;
+        this.live['showOnline'] = false;
     });
 
   } // end of constructor
@@ -207,81 +206,77 @@ export class HomePage {
     console.log("Json refresh completed")
   }
 
+  private mqttSubscribe() {
+    // Parse weewx mqtt loop
+    this.subs = this.mqttService.observe('weather/correns/live/loop').subscribe(
+      (loop : IMqttMessage) => {
+        this.loop = JSON.parse(loop.payload.toString());
+        // Transform unix epoch dateTime in date format using moment
+        if(this.loop['dateTime'] != null) {
+          this.dateTime = parseFloat(this.loop['dateTime']).toFixed(0);
+          this.live['dateTime'] = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
+          this.live['connectStatus'] = "Réception de données";
+          this.live['showOffline'] = false;
+          this.live['showOnline'] = true;
+        }
+        // Verifying if data exist to prevent loading blank value in html. 
+        // parseFloat data received from MQTT, round it and put unit
+        if(this.loop['outTemp_C'] != null) {
+          this.live['outTemp_C'] = this.replace_point(parseFloat(this.loop['outTemp_C']).toFixed(1)) + "<sup class='outtempunitlabelsuper'>°C</sup>";
+        }  
+        if(this.loop['appTemp_C'] != null) {
+          this.live['appTemp_C'] = 'Ressenti: ' + this.replace_point(parseFloat(this.loop['appTemp_C']).toFixed(1)) + " °C";
+        }
+        if(this.loop['windSpeed_kph'] != null) {
+          this.live['windSpeed_kph'] = parseFloat(this.loop['windSpeed_kph']).toFixed(0) + " km/h";
+        }
+        if(this.loop['windDir'] != null) {
+          this.live['windDir'] = parseFloat(this.loop['windDir']).toFixed(0) + " °";
+          this.live['windArrow'] =  "rotate(" + parseFloat(this.loop['windDir']) + 'deg)';
+          this.live['windCompass'] = this.wind_cardinals(parseFloat(this.loop['windDir']).toFixed(1));
+        }
+        if(this.loop['windGust_kph'] != null) {
+          this.live['windGust_kph'] = parseFloat(this.loop['windGust_kph']).toFixed(0) + " km/h";
+        }
+        if(this.loop['barometer_mbar'] != null) {
+          this.live['barometer_mbar'] = this.replace_point(parseFloat(this.loop['barometer_mbar']).toFixed(1)) + " hPa";
+        }
+        if(this.loop['cloudbase_meter'] != null) {
+          this.live['cloudbase_meter'] = parseFloat(this.loop['cloudbase_meter']).toFixed(0) + " mètres";
+        }
+        if(this.loop['dewpoint_C'] != null) {
+          this.live['dewpoint_C'] = this.replace_point(parseFloat(this.loop['dewpoint_C']).toFixed(1)) + " °C";
+        }
+        if(this.loop['outHumidity'] != null) {
+          this.live['outHumidity'] = parseFloat(this.loop['outHumidity']).toFixed(0) + " %";
+        }
+        if(this.loop['dayRain_cm'] != null) {
+          this.live['dayRain_cm'] = this.replace_point(parseFloat(this.loop['dayRain_cm']).toFixed(1)) + " mm";
+        }
+        if(this.loop['rainRate_cm_per_hour'] != null) {
+          this.live['rainRate_cm_per_hour'] = this.replace_point(parseFloat(this.loop['rainRate_cm_per_hour']).toFixed(1)) + " mm/h";
+        }
+        if(this.loop['UV'] != null) {
+          this.live['UV'] = this.replace_point(parseFloat(this.loop['UV']).toFixed(1));
+        }
+  
+      } // end of IMqttMessage
+    ); // end of subs
+  }
+
   ionViewDidLoad() {
     // load Json function
     this.loadJson();
-
     // reload Json function
-      this.reloadJson();
-
-    // Parse weewx mqtt loop
-    this.subs = this.mqttService.observe('weather/correns/live/loop').subscribe(
-    (loop : IMqttMessage) => {
-      this.loop = JSON.parse(loop.payload.toString());
-      // Transform unix epoch dateTime in date format using moment
-      if(this.loop['dateTime'] != null) {
-        this.dateTime = parseFloat(this.loop['dateTime']).toFixed(0);
-        this.live['dateTime'] = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
-        this.connectStatus = "Réception de données";
-        this.showOffline = false;
-        this.showOnline = true;
-      }
-      // Verifying if data exist to prevent loading blank value in html. 
-      // parseFloat data received from MQTT, round it and put unit
-      if(this.loop['outTemp_C'] != null) {
-        this.live['outTemp_C'] = this.replace_point(parseFloat(this.loop['outTemp_C']).toFixed(1)) + "<sup class='outtempunitlabelsuper'>°C</sup>";
-      }  
-      if(this.loop['appTemp_C'] != null) {
-        this.live['appTemp_C'] = 'Ressenti: ' + this.replace_point(parseFloat(this.loop['appTemp_C']).toFixed(1)) + " °C";
-      }
-      if(this.loop['windSpeed_kph'] != null) {
-        this.live['windSpeed_kph'] = parseFloat(this.loop['windSpeed_kph']).toFixed(0) + " km/h";
-      }
-      if(this.loop['windDir'] != null) {
-        this.live['windDir'] = parseFloat(this.loop['windDir']).toFixed(0) + " °";
-        this.live['windArrow'] =  "rotate(" + parseFloat(this.loop['windDir']) + 'deg)';
-        this.live['windCompass'] = this.wind_cardinals(parseFloat(this.loop['windDir']).toFixed(1));
-      }
-      if(this.loop['windGust_kph'] != null) {
-        this.live['windGust_kph'] = parseFloat(this.loop['windGust_kph']).toFixed(0) + " km/h";
-      }
-      if(this.loop['barometer_mbar'] != null) {
-        this.live['barometer_mbar'] = this.replace_point(parseFloat(this.loop['barometer_mbar']).toFixed(1)) + " hPa";
-      }
-      if(this.loop['cloudbase_meter'] != null) {
-        this.live['cloudbase_meter'] = parseFloat(this.loop['cloudbase_meter']).toFixed(0) + " mètres";
-      }
-      if(this.loop['dewpoint_C'] != null) {
-        this.live['dewpoint_C'] = this.replace_point(parseFloat(this.loop['dewpoint_C']).toFixed(1)) + " °C";
-      }
-      if(this.loop['outHumidity'] != null) {
-        this.live['outHumidity'] = parseFloat(this.loop['outHumidity']).toFixed(0) + " %";
-      }
-      if(this.loop['dayRain_cm'] != null) {
-        this.live['dayRain_cm'] = this.replace_point(parseFloat(this.loop['dayRain_cm']).toFixed(1)) + " mm";
-      }
-      if(this.loop['rainRate_cm_per_hour'] != null) {
-        this.live['rainRate_cm_per_hour'] = this.replace_point(parseFloat(this.loop['rainRate_cm_per_hour']).toFixed(1)) + " mm/h";
-      }
-      if(this.loop['UV'] != null) {
-        this.live['UV'] = this.replace_point(parseFloat(this.loop['UV']).toFixed(1));
-      }
-
-    } // end of IMqttMessage
-    ); // end of subs
+    this.reloadJson();
+    // subscribe to mqtt topic
+    this.mqttSubscribe();
     
-    
-    console.log('ionViewDidLoad HomePage');
+    console.log('HomePage loaded');
 
   }
-
-  //
-  ionViewWillEnter() {
-
-    console.log('ionViewWillEnter HomePage');
-  }
-
   ionViewWillLeave() {
+      // Mqtt Unsubscribe
       this.subs.unsubscribe();
       console.log('MQTT unsubscribed');
   }
