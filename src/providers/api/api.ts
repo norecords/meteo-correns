@@ -32,6 +32,20 @@ export class ApiProvider {
     .catch(this.catchError)
   }
 
+  getJsonMonthCharts(){
+    return this.http.get('https://meteo.correns.org/api/app.php?q=monthcharts')
+    .map(this.extractData)
+    .do(this.logResponse)
+    .catch(this.catchError)
+  }
+
+  getJsonYearCharts(){
+    return this.http.get('https://meteo.correns.org/api/app.php?q=yearcharts')
+    .map(this.extractData)
+    .do(this.logResponse)
+    .catch(this.catchError)
+  }
+
   getForecast(){
     return this.http.get('https://meteo.correns.org/api/app.php?q=forecast')
     .map(this.extractData)

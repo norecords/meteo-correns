@@ -16,43 +16,12 @@ export class HomePage {
   showOnline: boolean = false;
   showOffline: boolean = true;
   connectStatus : string = "Connection en cours...";
-  loop = [];
-  dateTime : any;
-  outTemp_C : string;
-  outTempColor: string;
-  appTemp_C : string;
-  windSpeed_kph : string;
-  windDir : string;
-  windGust_kph  : string;
-  barometer_mbar : string;
-  cloudbase_meter : string;
-  dewpoint_C : string;
-  outHumidity : string;
-  dayRain_cm : string;
-  rainRate_cm_per_hour : string;
-  UV: string;
-  symbol: string ;
-  weather = [];
-  loading: any;
-  summary: string;
-  windCompass: string;
-  windArrow: string;
-  visibility: string;
-  cloudbase: string;
-  dayOutTempMax: string;
-  dayOutTempMin: string;
-  dayWindAvg: string;
-  dayWindMax: string;
-  dayRainSum: string;
-  dayRainRateMax: string;
-  monthRainRateMax: string;
-  monthOutTempMax: string;
-  monthOutTempMin: string;
-  monthWindAvg: string;
-  monthWindMax: string;
-  monthRainSum: string;
-  dateToday: string;
-  dateMonth: string;
+  loop = []; // mqtt loop
+  dateTime : any; // use to convert unix epoch to date
+  weather = []; // json array
+  loading: any; // loader
+  live = []; // live array
+  summaries = []; // summaries array
 
   private subs : Subscription;   // MQTT sub
 
@@ -90,9 +59,9 @@ export class HomePage {
   
   // Transform mqtt value windDir degree in cardinal point
   private wind_cardinals(deg) {
-    var directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO','N2']
+    var directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO','N']
     var cardinal = directions[Math.round(deg / 22.5)];
-    if (cardinal == 'N2') cardinal = 'N';
+    // if (cardinal == 'N2') cardinal = 'N';
     return cardinal;
   }
 
@@ -159,41 +128,40 @@ export class HomePage {
 
     this.apiProvider.getLive().subscribe(data => { 
       this.weather = data;
-      this.symbol = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
-      this.summary = this.weather['current']['summary'];
-      var dateRaw = this.weather['current']['datetime_raw'];
-      this.dateTime = moment.unix(dateRaw).format('dddd Do MMMM YYYY LTS');
-      this.dateToday = this.capitalizeFirstLetter(moment.unix(dateRaw).format('dddd Do MMMM YYYY'));
-      this.dateMonth = this.capitalizeFirstLetter(moment.unix(dateRaw).format('MMMM YYYY'));
-      this.outTemp_C = this.weather['current']['outTemp_formatted'] + "<sup class='outtempunitlabelsuper'>°C</sup>";
-      this.outTempColor = this.temp_colorize(parseFloat(this.weather['current']['outTemp_formatted']));
-      this.appTemp_C = 'Ressenti: ' + this.weather['current']['appTemp'];
-      this.windSpeed_kph = this.weather['current']['windSpeed'];
-      this.windCompass = this.weather['current']['windCompass'];
-      this.windDir = this.weather['current']['windDir'];
-      this.windArrow =  "rotate(" + this.weather['current']['winddir_formatted'] + 'deg)';
-      this.windGust_kph  = this.weather['current']['windGust'];
-      this.barometer_mbar = this.weather['current']['barometer'];
-      this.dewpoint_C = this.weather['current']['dewpoint'];
-      this.outHumidity = this.weather['current']['outHumidity'];
-      this.dayRain_cm = this.weather['current']['rain'];
-      this.rainRate_cm_per_hour = this.weather['current']['rainRate'];
-      this.UV = this.weather['current']['uv'];
-      this.visibility = this.weather['current']['visibility'];
-      this.cloudbase = this.weather['current']['cloudbase'];
-      this.dayOutTempMax = this.weather['day']['outTempMax'];
-      this.dayOutTempMin = this.weather['day']['outTempMin'];
-      this.dayWindAvg = this.weather['day']['windAvg'];
-      this.dayWindMax = this.weather['day']['windMax'];
-      this.dayRainSum = this.weather['day']['rainSum'];
-      this.dayRainRateMax = this.weather['day']['rainRateMax'];
-      this.monthOutTempMax = this.weather['month']['outTempMax'];
-      this.monthOutTempMin = this.weather['month']['outTempMin'];
-      this.monthWindAvg = this.weather['month']['windAvg'];
-      this.monthWindMax = this.weather['month']['windMax'];
-      this.monthRainSum = this.weather['month']['rainSum'];
-      this.monthRainRateMax = this.weather['month']['rainRateMax'];
-
+        this.dateTime = this.weather['current']['datetime_raw'];
+        this.summaries['icon'] = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
+        this.summaries['currentText'] = this.weather['current']['summary'];
+        this.live['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
+        this.live['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
+        this.live['dateTime'] = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
+        this.live['outTemp_C'] = this.weather['current']['outTemp_formatted'] + "<sup class='outtempunitlabelsuper'>°C</sup>";
+        this.live['outTempColor'] = this.temp_colorize(parseFloat(this.weather['current']['outTemp_formatted']));
+        this.live['appTemp_C'] = 'Ressenti: ' + this.weather['current']['appTemp'];
+        this.live['windSpeed_kph'] = this.weather['current']['windSpeed'];
+        this.live['windCompass'] = this.weather['current']['windCompass'];
+        this.live['windDir'] = this.weather['current']['windDir'];
+        this.live['windArrow'] =  "rotate(" + this.weather['current']['winddir_formatted'] + 'deg)';
+        this.live['windGust_kph']  = this.weather['current']['windGust'];
+        this.live['barometer_mbar'] = this.weather['current']['barometer'];
+        this.live['dewpoint_C'] = this.weather['current']['dewpoint'];
+        this.live['outHumidity'] = this.weather['current']['outHumidity'];
+        this.live['dayRain_cm'] = this.weather['current']['rain'];
+        this.live['rainRate_cm_per_hour'] = this.weather['current']['rainRate'];
+        this.live['UV'] = this.weather['current']['uv'];
+        this.summaries['visibility'] = this.weather['current']['visibility'];
+        this.live['cloudbase'] = this.weather['current']['cloudbase'];
+        this.summaries['dayOutTempMax'] = this.weather['day']['outTempMax'];
+        this.summaries['dayOutTempMin'] = this.weather['day']['outTempMin'];
+        this.summaries['dayWindAvg'] = this.weather['day']['windAvg'];
+        this.summaries['dayWindMax'] = this.weather['day']['windMax'];
+        this.summaries['dayRainSum'] = this.weather['day']['rainSum'];
+        this.summaries['dayRainRateMax'] = this.weather['day']['rainRateMax'];
+        this.summaries['monthOutTempMax'] = this.weather['month']['outTempMax'];
+        this.summaries['monthOutTempMin'] = this.weather['month']['outTempMin'];
+        this.summaries['monthWindAvg'] = this.weather['month']['windAvg'];
+        this.summaries['monthWindMax'] = this.weather['month']['windMax'];
+        this.summaries['monthRainSum'] = this.weather['month']['rainSum'];
+        this.summaries['monthRainRateMax'] = this.weather['month']['rainRateMax'];
       // Dismiss loader
       if (this.weather['current']['datetime_raw'] =! null) loader.dismiss();
     });   
@@ -204,23 +172,25 @@ export class HomePage {
     setInterval(() => {
       this.apiProvider.getLive().subscribe(data => { 
         this.weather = data;
-        if (this.weather['current']['datetime_raw'] =! null) {
-          this.symbol = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
-          this.summary = this.weather['current']['summary'];
-          this.dayOutTempMax = this.weather['day']['outTempMax'];
-          this.dayOutTempMin = this.weather['day']['outTempMin'];
-          this.dayWindAvg = this.weather['day']['windAvg'];
-          this.dayWindMax = this.weather['day']['windMax'];
-          this.dayRainSum = this.weather['day']['rainSum'];
-          this.dayRainRateMax = this.weather['day']['rainRateMax'];
-          this.monthOutTempMax = this.weather['month']['outTempMax'];
-          this.monthOutTempMin = this.weather['month']['outTempMin'];
-          this.monthWindAvg = this.weather['month']['windAvg'];
-          this.monthWindMax = this.weather['month']['windMax'];
-          this.monthRainSum = this.weather['month']['rainSum'];
-          this.monthRainRateMax = this.weather['month']['rainRateMax'];
+          this.dateTime = this.weather['current']['datetime_raw'];
+          this.live['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
+          this.live['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
+          this.summaries['symbol'] = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
+          this.summaries['currentText'] = this.weather['current']['summary'];
+          this.summaries['dayOutTempMax'] = this.weather['day']['outTempMax'];
+          this.summaries['dayOutTempMin'] = this.weather['day']['outTempMin'];
+          this.summaries['dayWindAvg'] = this.weather['day']['windAvg'];
+          this.summaries['dayWindMax'] = this.weather['day']['windMax'];
+          this.summaries['dayRainSum'] = this.weather['day']['rainSum'];
+          this.summaries['dayRainRateMax'] = this.weather['day']['rainRateMax'];
+          this.summaries['monthOutTempMax'] = this.weather['month']['outTempMax'];
+          this.summaries['monthOutTempMin'] = this.weather['month']['outTempMin'];
+          this.summaries['monthWindAvg'] = this.weather['month']['windAvg'];
+          this.summaries['monthWindMax'] = this.weather['month']['windMax'];
+          this.summaries['monthRainSum'] = this.weather['month']['rainSum'];
+          this.summaries['monthRainRateMax'] = this.weather['month']['rainRateMax'];
           console.log('summaries and symbol updated');
-        }
+        
       });
     }, 300000); // 5 minutes
   }
@@ -251,7 +221,7 @@ export class HomePage {
       // Transform unix epoch dateTime in date format using moment
       if(this.loop['dateTime'] != null) {
         this.dateTime = parseFloat(this.loop['dateTime']).toFixed(0);
-        this.dateTime = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
+        this.live['dateTime'] = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
         this.connectStatus = "Réception de données";
         this.showOffline = false;
         this.showOnline = true;
@@ -259,42 +229,42 @@ export class HomePage {
       // Verifying if data exist to prevent loading blank value in html. 
       // parseFloat data received from MQTT, round it and put unit
       if(this.loop['outTemp_C'] != null) {
-        this.outTemp_C = this.replace_point(parseFloat(this.loop['outTemp_C']).toFixed(1)) + "<sup class='outtempunitlabelsuper'>°C</sup>";
+        this.live['outTemp_C'] = this.replace_point(parseFloat(this.loop['outTemp_C']).toFixed(1)) + "<sup class='outtempunitlabelsuper'>°C</sup>";
       }  
       if(this.loop['appTemp_C'] != null) {
-        this.appTemp_C = 'Ressenti: ' + this.replace_point(parseFloat(this.loop['appTemp_C']).toFixed(1)) + " °C";
+        this.live['appTemp_C'] = 'Ressenti: ' + this.replace_point(parseFloat(this.loop['appTemp_C']).toFixed(1)) + " °C";
       }
       if(this.loop['windSpeed_kph'] != null) {
-        this.windSpeed_kph = parseFloat(this.loop['windSpeed_kph']).toFixed(0) + " km/h";
+        this.live['windSpeed_kph'] = parseFloat(this.loop['windSpeed_kph']).toFixed(0) + " km/h";
       }
       if(this.loop['windDir'] != null) {
-        this.windDir = parseFloat(this.loop['windDir']).toFixed(0) + " °";
-        this.windArrow =  "rotate(" + parseFloat(this.loop['windDir']) + 'deg)';
-        this.windCompass = this.wind_cardinals(parseFloat(this.loop['windDir']).toFixed(1));
+        this.live['windDir'] = parseFloat(this.loop['windDir']).toFixed(0) + " °";
+        this.live['windArrow'] =  "rotate(" + parseFloat(this.loop['windDir']) + 'deg)';
+        this.live['windCompass'] = this.wind_cardinals(parseFloat(this.loop['windDir']).toFixed(1));
       }
       if(this.loop['windGust_kph'] != null) {
-        this.windGust_kph = parseFloat(this.loop['windGust_kph']).toFixed(0) + " km/h";
+        this.live['windGust_kph'] = parseFloat(this.loop['windGust_kph']).toFixed(0) + " km/h";
       }
       if(this.loop['barometer_mbar'] != null) {
-        this.barometer_mbar = this.replace_point(parseFloat(this.loop['barometer_mbar']).toFixed(1)) + " hPa";
+        this.live['barometer_mbar'] = this.replace_point(parseFloat(this.loop['barometer_mbar']).toFixed(1)) + " hPa";
       }
       if(this.loop['cloudbase_meter'] != null) {
-        this.cloudbase_meter = parseFloat(this.loop['cloudbase_meter']).toFixed(0) + " mètres";
+        this.live['cloudbase_meter'] = parseFloat(this.loop['cloudbase_meter']).toFixed(0) + " mètres";
       }
       if(this.loop['dewpoint_C'] != null) {
-        this.dewpoint_C = this.replace_point(parseFloat(this.loop['dewpoint_C']).toFixed(1)) + " °C";
+        this.live['dewpoint_C'] = this.replace_point(parseFloat(this.loop['dewpoint_C']).toFixed(1)) + " °C";
       }
       if(this.loop['outHumidity'] != null) {
-        this.outHumidity = parseFloat(this.loop['outHumidity']).toFixed(0) + " %";
+        this.live['outHumidity'] = parseFloat(this.loop['outHumidity']).toFixed(0) + " %";
       }
       if(this.loop['dayRain_cm'] != null) {
-        this.dayRain_cm = this.replace_point(parseFloat(this.loop['dayRain_cm']).toFixed(1)) + " mm";
+        this.live['dayRain_cm'] = this.replace_point(parseFloat(this.loop['dayRain_cm']).toFixed(1)) + " mm";
       }
       if(this.loop['rainRate_cm_per_hour'] != null) {
-        this.rainRate_cm_per_hour = this.replace_point(parseFloat(this.loop['rainRate_cm_per_hour']).toFixed(1)) + " mm/h";
+        this.live['rainRate_cm_per_hour'] = this.replace_point(parseFloat(this.loop['rainRate_cm_per_hour']).toFixed(1)) + " mm/h";
       }
       if(this.loop['UV'] != null) {
-        this.UV = this.replace_point(parseFloat(this.loop['UV']).toFixed(1));
+        this.live['UV'] = this.replace_point(parseFloat(this.loop['UV']).toFixed(1));
       }
 
     } // end of IMqttMessage
