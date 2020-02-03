@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform } from 'ionic-angular';
+import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Network } from '@ionic-native/network';
 
 
 @Component({
@@ -12,7 +13,7 @@ export class MyApp {
 
   rootPage: any = 'HomePage'; //#### LAZY LOADING: LOAD ALL PAGES AS STRING ####
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public events: Events, public network: Network) {
     this.initializeApp();
 
   }
@@ -27,6 +28,8 @@ export class MyApp {
       this.statusBar.show();
     });
   }
+
+
 
   openPage(page) {
     // Reset the content nav to have just this page

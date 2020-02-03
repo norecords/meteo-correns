@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
 import { ApiProvider } from '../../providers/api/api';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
-import { Subscription } from 'rxjs/Subscription'
+import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import 'moment/locale/fr';
+import { Network } from '@ionic-native/network';
 
 @IonicPage()
 @Component({
@@ -17,45 +18,79 @@ export class HomePage {
   weather = []; // json array  
   live = []; // live array
   summaries = []; // summaries array
-  loading: any; // loader
+  loading: string; // loader
   dateTime : any; // use to convert unix epoch to date
+  networkStatus : boolean;
 
   private subs : Subscription;   // MQTT sub
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider, private mqttService: MqttService) { 
-    this.live['connectStatus'] = 'Connection en cours...';
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public loadingCtrl: LoadingController,
+              public tost : ToastController,
+              public network : Network, 
+              private apiProvider: ApiProvider,
+              private mqttService: MqttService){
+
+    this.network.onDisconnect().subscribe(() => {
+      console.log('network disconnected')
+      alert("Vous êtes déconnecté, l'application va se fermer")
+      navigator['app'].exitApp()
+    });
+
+    this.network.onConnect().subscribe(() => {
+      console.log('network connected')
+    });
+
     this.live['showOffline'] = true;
     this.live['showOnline'] = false;
+
+    if (navigator.onLine) {
+      console.log('Internet is connected');
+      this.networkStatus = true;
+    } else {
+      console.log('No internet connection');
+      this.networkStatus = false;
+    }
+
+    console.log('MQTT Connection en cours...');
     this.mqttService.onConnect.subscribe((e) => {
-      console.log('onConnect', e);
+      console.log('MQTT onConnect', e);
       if(e['cmd'] == 'connack') {
-        this.live['connectStatus'] = "Connecté. En attente de données...";
         this.live['showOffline'] = false;
         this.live['showOnline'] = false;
-        console.log('MQTT Connected');
+        this.tost.create({
+          message: 'Connecté au serveur live.',
+          duration: 5000
+        }).present();
       }
     });
     this.mqttService.onError.subscribe((e) => {
-        console.log('onError', e);
-        this.live['connectStatus'] = "Erreur de connection..."
+        console.log('MQTT Erreur de connection...')
+        console.log('MQTT onError', e);
+        this.tost.create({
+          message: 'Une erreur est survenue, veuillez vérifier votre connection.',
+          duration: 8000
+        }).present();
         this.live['showOffline'] = true;
         this.live['showOnline'] = false;
     });
     this.mqttService.onClose.subscribe(() => {
-        console.log('onClose');
-        this.live['connectStatus'] = "Connection fermée."
+        console.log('MQTT Connection fermée.')
         this.live['showOffline'] = true;
         this.live['showOnline'] = false;
     });
     this.mqttService.onReconnect.subscribe(() => {
-        console.log('onReconnect');
-        this.live['connectStatus'] = "Nouvelle tentative de connection."
+      //this.tost.create({
+      //  message: 'Nouvelle tentative de connection au live.',
+      //  duration: 3000
+      //}).present();
         this.live['showOffline'] = false;
         this.live['showOnline'] = false;
     });
 
-  } // end of constructor
-  
+  }
+
   // Transform mqtt value windDir degree in cardinal point
   private wind_cardinals(deg) {
     var directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO','N']
@@ -128,10 +163,6 @@ export class HomePage {
     this.apiProvider.getLive().subscribe(data => { 
       this.weather = data;
         this.dateTime = this.weather['current']['datetime_raw'];
-        this.summaries['icon'] = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
-        this.summaries['currentText'] = this.weather['current']['summary'];
-        this.live['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
-        this.live['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
         this.live['dateTime'] = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
         this.live['outTemp_C'] = this.weather['current']['outTemp_formatted'] + "<sup class='outtempunitlabelsuper'>°C</sup>";
         this.live['outTempColor'] = this.temp_colorize(parseFloat(this.weather['current']['outTemp_formatted']));
@@ -147,8 +178,12 @@ export class HomePage {
         this.live['dayRain_cm'] = this.weather['current']['rain'];
         this.live['rainRate_cm_per_hour'] = this.weather['current']['rainRate'];
         this.live['UV'] = this.weather['current']['uv'];
-        this.summaries['visibility'] = this.weather['current']['visibility'];
         this.live['cloudbase'] = this.weather['current']['cloudbase'];
+        this.summaries['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
+        this.summaries['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
+        this.summaries['visibility'] = this.weather['current']['visibility'];
+        this.summaries['icon'] = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
+        this.summaries['currentText'] = this.weather['current']['summary'];
         this.summaries['dayOutTempMax'] = this.weather['day']['outTempMax'];
         this.summaries['dayOutTempMin'] = this.weather['day']['outTempMin'];
         this.summaries['dayWindAvg'] = this.weather['day']['windAvg'];
@@ -172,10 +207,11 @@ export class HomePage {
       this.apiProvider.getLive().subscribe(data => { 
         this.weather = data;
           this.dateTime = this.weather['current']['datetime_raw'];
-          this.live['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
-          this.live['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
+          this.summaries['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
+          this.summaries['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
           this.summaries['symbol'] = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
           this.summaries['currentText'] = this.weather['current']['summary'];
+          this.summaries['visibility'] = this.weather['current']['visibility'];
           this.summaries['dayOutTempMax'] = this.weather['day']['outTempMax'];
           this.summaries['dayOutTempMin'] = this.weather['day']['outTempMin'];
           this.summaries['dayWindAvg'] = this.weather['day']['windAvg'];
@@ -196,14 +232,22 @@ export class HomePage {
 
   // Refresher function
   load(refresher) {
-    setTimeout(() => {
+    if (navigator.onLine) {
+      console.log('Internet is connected');
+      setTimeout(() => {
+        refresher.complete();
+      }, 20000);
+      // load Json function
+      this.loadJson();
+        
       refresher.complete();
-    }, 20000);
-    // load Json function
-    this.loadJson();
-      
-    refresher.complete();
-    console.log("Json refresh completed")
+      console.log("Json refresh completed")
+    } else {
+      this.tost.create({
+        message: 'Une erreur est survenue, veuillez vérifier votre connection.',
+        duration: 8000
+      }).present();
+    }
   }
 
   private mqttSubscribe() {
@@ -215,7 +259,6 @@ export class HomePage {
         if(this.loop['dateTime'] != null) {
           this.dateTime = parseFloat(this.loop['dateTime']).toFixed(0);
           this.live['dateTime'] = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
-          this.live['connectStatus'] = "Réception de données";
           this.live['showOffline'] = false;
           this.live['showOnline'] = true;
         }
@@ -223,6 +266,8 @@ export class HomePage {
         // parseFloat data received from MQTT, round it and put unit
         if(this.loop['outTemp_C'] != null) {
           this.live['outTemp_C'] = this.replace_point(parseFloat(this.loop['outTemp_C']).toFixed(1)) + "<sup class='outtempunitlabelsuper'>°C</sup>";
+          this.live['outTempColor'] = this.temp_colorize(parseFloat(this.loop['outTemp_C']).toFixed(1));
+
         }  
         if(this.loop['appTemp_C'] != null) {
           this.live['appTemp_C'] = 'Ressenti: ' + this.replace_point(parseFloat(this.loop['appTemp_C']).toFixed(1)) + " °C";
@@ -265,6 +310,8 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
+
+    if (this.networkStatus === true) {
     // load Json function
     this.loadJson();
     // reload Json function
@@ -273,12 +320,15 @@ export class HomePage {
     this.mqttSubscribe();
     
     console.log('HomePage loaded');
+    } 
 
   }
   ionViewWillLeave() {
       // Mqtt Unsubscribe
+      if (this.dateTime != null) {
       this.subs.unsubscribe();
       console.log('MQTT unsubscribed');
+      }
   }
 
 

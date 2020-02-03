@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.correns.meteo" version="0.9.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Météo Correns</name>
     <description>Station météo à Correns, FRANCE</description>
-    <author email="meteo@correns.org" href="https://meteo.correns.org/">CIRC Team</author>
+    <author email="meteo@correns.org" href="https://meteo.correns.org/">Olivier Colle</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -13,6 +13,7 @@
     <allow-intent href="geo:*" />
     <preference name="ScrollEnabled" value="false" />
     <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-targetSdkVersion" value="28" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="300" />
@@ -27,6 +28,12 @@
         <icon density="xhdpi" src="resources/android/icon/drawable-xhdpi-icon.png" />
         <icon density="xxhdpi" src="resources/android/icon/drawable-xxhdpi-icon.png" />
         <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon.png" />
+        <splash density="ldpi" src="resources/android/splash/drawable-land-ldpi-screen.png" />
+        <splash density="mdpi" src="resources/android/splash/drawable-land-mdpi-screen.png" />
+        <splash density="hdpi" src="resources/android/splash/drawable-land-hdpi-screen.png" />
+        <splash density="xhdpi" src="resources/android/splash/drawable-land-xhdpi-screen.png" />
+        <splash density="xxhdpi" src="resources/android/splash/drawable-land-xxhdpi-screen.png" />
+        <splash density="xxxhdpi" src="resources/android/splash/drawable-land-xxxhdpi-screen.png" />
         <splash density="land-ldpi" src="resources/android/splash/drawable-land-ldpi-screen.png" />
         <splash density="land-mdpi" src="resources/android/splash/drawable-land-mdpi-screen.png" />
         <splash density="land-hdpi" src="resources/android/splash/drawable-land-hdpi-screen.png" />
@@ -83,5 +90,5 @@
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
-    <engine name="android" spec="~7.1.4" />
+    <engine name="android" spec="~8.1.0" />
 </widget>
