@@ -63,8 +63,8 @@ export class ChartsWeekPage {
             // dateTime
           this.dateTime = this.weather['temperature']['series']['outTemp']['data']['0']['0'] / 1000;
           console.log(this.lastDateTime)
-          this.longTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY') + ' au ' + moment.unix(this.lastDateTime).format('dddd Do MMMM YYYY');
-          this.shortTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY');
+          this.longTitle = 'Du ' + moment.unix(this.dateTime).format('dddd Do MMMM YYYY') + ' au ' + moment.unix(this.lastDateTime).format('dddd Do MMMM YYYY');
+          this.shortTitle = 'Du ' + moment.unix(this.dateTime).format('L') + ' au ' + moment.unix(this.lastDateTime).format('L');
           }
 
           // dewpoint

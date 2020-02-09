@@ -102,7 +102,7 @@ export class HomePage {
   // Handle wind arrow rotation with the ability to "rollover" past 0 
 // without spinning back around. e.g 350 to 3 would spin back around
 // https://stackoverflow.com/a/19872672/1177153
-private rotateThis(newRotation) {
+public rotateThis(newRotation) {
   if ( newRotation == "N/A") { return; }
   var currentRotation;
   var finalRotation = finalRotation || 0; // if finalRotation undefined or 0, make 0, else finalRotation
@@ -127,7 +127,7 @@ private rotateThis(newRotation) {
   }
 
   // colorize outTemp class span
-  private temp_colorize(temp) {
+  public temp_colorize(temp) {
     if ( temp <= 0 ) {
         var color = "#1278c8";
     } else if ( temp <= -3.8 ) {
@@ -159,6 +159,7 @@ private rotateThis(newRotation) {
     } else if ( temp >= 43.4 ) {
       color = "rgba(218,113,113,1)";
     }
+    //console.log(color)
     return color;
   }
 

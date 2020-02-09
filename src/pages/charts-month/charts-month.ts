@@ -20,7 +20,7 @@ export class ChartsMonthPage {
   data: void;
   dateTime : number;
   longTitle : string;
-  //shortTitle : string;
+  shortTitle : string;
   weather = []
   lastDateTime: number;
 
@@ -62,8 +62,8 @@ export class ChartsMonthPage {
             // dateTime
           this.dateTime = this.weather['temperature']['series']['outTemp']['data']['0']['0'] / 1000;
           console.log(this.lastDateTime)
-          this.longTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY') + ' au ' + moment.unix(this.lastDateTime).format('dddd Do MMMM YYYY');
-          //this.shortTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY');
+          this.longTitle = 'Du ' + moment.unix(this.dateTime).format('dddd Do MMMM YYYY') + ' au ' + moment.unix(this.lastDateTime).format('dddd Do MMMM YYYY');
+          this.shortTitle = 'Du ' + moment.unix(this.dateTime).format('L') + ' au ' + moment.unix(this.lastDateTime).format('L');
           }
 
           // outTemp_min
@@ -113,12 +113,12 @@ export class ChartsMonthPage {
           loader.dismiss()
 
           }
-          this.data = this.showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,this.longTitle)
+          this.data = this.showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,this.longTitle,this.shortTitle)
         });
 
   }
 
-  showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,longTitle){
+  showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,longTitle,shortTitle){
  
     HighStock.chart('chartsMonth', {
 
@@ -372,7 +372,7 @@ export class ChartsMonthPage {
                       height: 1600
                   }, 
                   title: {
-                      text : longTitle
+                      text : shortTitle
                   }
 
               }
