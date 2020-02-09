@@ -9,58 +9,66 @@ import { ApiProvider } from '../../providers/api/api';
 })
 
 export class ForecastPage {
-  weather = []; /* declare live as array */
   @ViewChild('slides') slides: Slides;
 
-  selected0: any; selected1: any; selected2: any; selected3: any; selected4: any; selected5: any; selected6: any; selected7: any; selected8: any; selected9: any;
-  day0: any; day1: any; day2: any; day3: any; day4: any; day5: any; day6: any; day7: any; day8: any; day9: any;
-  symbol0: any; symbol1: any; symbol2: any; symbol3: any; symbol4: any; symbol5: any; symbol6: any; symbol7: any; symbol8: any; symbol9: any;
+  weather = [];
+  selected = [];
+  day = [];
+  symbol = [];
   loading: any;
+
+  slideOpts = {
+    initialSlide: 2,
+    speed: 400
+  };
   
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController,private apiProvider: ApiProvider) { }
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public loadingCtrl: LoadingController,
+              private apiProvider: ApiProvider) {}
   
   public goToSlide(num) {
     this.slides.slideTo(num, 500);
   }
 
-  public getFirstLiClass(selected) {
+  public getFirstLiClass(sel) {
     let currentIndex = this.slides.getActiveIndex();
-    if (currentIndex == 0) selected = 'active';
-     return selected
+    if (currentIndex == 0) sel = 'active';
+     return sel
   }
 
   slideChanged() {
     let previousIndex = this.slides.getPreviousIndex();
     let currentIndex = this.slides.getActiveIndex();
-    if (previousIndex == 0) this.selected0 = 0;
-    else if (currentIndex == 0) this.selected0 = 1;
-    if (previousIndex == 1) this.selected1 = 0;
-    else if (currentIndex == 1) this.selected1 = 1;
-    if (previousIndex == 2) this.selected2 = 0;
-    else if (currentIndex == 2) this.selected2 = 1;
-    if (previousIndex == 3) this.selected3 = 0;
-    else if (currentIndex == 3) this.selected3 = 1;
-    if (previousIndex == 4) this.selected4 = 0;
-    else if (currentIndex == 4) this.selected4 = 1;
-    if (previousIndex == 5) this.selected5 = 0;
-    else if (currentIndex == 5) this.selected5 = 1;
-    if (previousIndex == 6) this.selected6 = 0;
-    else if (currentIndex == 6) this.selected6 = 1;
-    if (previousIndex == 7) this.selected7 = 0;
-    else if (currentIndex == 7) this.selected7 = 1;
-    if (previousIndex == 8) this.selected8 = 0;
-    else if (currentIndex == 8) this.selected8 = 1;
-    if (previousIndex == 9) this.selected9 = 0;
-    else if (currentIndex == 9) this.selected9 = 1;
+    if (previousIndex === 0) this.selected[0] = 0;
+    else if (currentIndex === 0) this.selected[0] = 1;
+    if (previousIndex === 1) this.selected[1] = 0;
+    else if (currentIndex === 1) this.selected[1] = 1;
+    if (previousIndex === 2) this.selected[2] = 0;
+    else if (currentIndex === 2) this.selected[2] = 1;
+    if (previousIndex === 3) this.selected[3] = 0;
+    else if (currentIndex === 3) this.selected[3] = 1;
+    if (previousIndex === 4) this.selected[4] = 0;
+    else if (currentIndex === 4) this.selected[4] = 1;
+    if (previousIndex == 5) this.selected[5] = 0;
+    else if (currentIndex == 5) this.selected[5] = 1;
+    if (previousIndex == 6) this.selected[6] = 0;
+    else if (currentIndex == 6) this.selected[6] = 1;
+    if (previousIndex == 7) this.selected[7] = 0;
+    else if (currentIndex == 7) this.selected[7] = 1;
+    if (previousIndex == 8) this.selected[8] = 0;
+    else if (currentIndex == 8) this.selected[8] = 1;
+    if (previousIndex == 9) this.selected[9] = 0;
+    else if (currentIndex == 9) this.selected[9] = 1;
+    if (previousIndex == 9 && currentIndex == 10) this.selected[9] = 1
 
-    //console.log('prev', previousIndex);
-    //console.log('current', currentIndex);
   }
 
   ionViewDidLoad() {
  
     let loader = this.loadingCtrl.create({
-      content: '<h2>Chargement des données</h2>Téléchargement en cours...'
+      content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+      cssClass: 'custom-loader-class'
     });
 
     loader.present()
@@ -71,31 +79,13 @@ export class ForecastPage {
 
     this.apiProvider.getForecast().subscribe(data => { 
       this.weather = data 
-      this.day0 = this.weather['date']['0']['short']
-      this.day1 = this.weather['date']['1']['short']
-      this.day2 = this.weather['date']['2']['short']
-      this.day3 = this.weather['date']['3']['short']
-      this.day4 = this.weather['date']['4']['short']
-      this.day5 = this.weather['date']['5']['short']
-      this.day6 = this.weather['date']['6']['short']
-      this.day7 = this.weather['date']['7']['short']
-      this.day8 = this.weather['date']['8']['short']
-      this.day9 = this.weather['date']['9']['short']
-      this.symbol0 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['0']['symbol'] + '.png">'
-      this.symbol1 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['1']['symbol'] + '.png">'
-      this.symbol2 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['2']['symbol'] + '.png">'
-      this.symbol3 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['3']['symbol'] + '.png">'
-      this.symbol4 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['4']['symbol'] + '.png">'
-      this.symbol5 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['5']['symbol'] + '.png">'
-      this.symbol6 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['6']['symbol'] + '.png">'
-      this.symbol7 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['7']['symbol'] + '.png">'
-      this.symbol8 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['8']['symbol'] + '.png">'
-      this.symbol9 = '<img class="Ficon" src="assets/imgs/yr/' + this.weather['date']['9']['symbol'] + '.png">'
-      loader.dismiss()
-     
-      //this.weather['icon'] = '<i class="wi ' + this.weather['icon'] + '"></i>'
-    }); // Loading the Data
-  
+       // Short date
+       for(let i = 0; i < this.weather['date'].length; i++) {
+        this.day.push(this.weather['date'][i]['short']);
+        this.symbol.push('<img class="Ficon" src="assets/imgs/yr/' + this.weather['date'][i]['symbol'] + '.png">')
+      }
+      loader.dismiss()     
+    });
     console.log('ionViewDidLoad ForecastPage');
   }
 

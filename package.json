@@ -1,6 +1,6 @@
 {
   "name": "meteo-correns",
-  "version": "0.9.2",
+  "version": "0.9.4",
   "author": "Olivier Colle",
   "homepage": "https://meteo.correns.org",
   "private": true,
@@ -27,6 +27,7 @@
     "@ionic/storage": "2.2.0",
     "cordova-android": "8.1.0",
     "handlebars": "^4.0.11",
+    "highcharts": "^8.0.0",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
     "moment": "^2.24.0",

@@ -99,6 +99,20 @@ export class HomePage {
     return cardinal;
   }
 
+  // Handle wind arrow rotation with the ability to "rollover" past 0 
+// without spinning back around. e.g 350 to 3 would spin back around
+// https://stackoverflow.com/a/19872672/1177153
+private rotateThis(newRotation) {
+  if ( newRotation == "N/A") { return; }
+  var currentRotation;
+  var finalRotation = finalRotation || 0; // if finalRotation undefined or 0, make 0, else finalRotation
+  currentRotation = finalRotation % 360;
+  if ( currentRotation < 0 ) { currentRotation += 360; }
+  if ( currentRotation < 180 && (newRotation > (currentRotation + 180)) ) { finalRotation -= 360; }
+  if ( currentRotation >= 180 && (newRotation <= (currentRotation - 180)) ) { finalRotation += 360; }  finalRotation += (newRotation - currentRotation);
+  return finalRotation;
+}
+
   // Replace unit . by ,
   private replace_point(str) {
     var re = '.'; 
@@ -277,7 +291,7 @@ export class HomePage {
         }
         if(this.loop['windDir'] != null) {
           this.live['windDir'] = parseFloat(this.loop['windDir']).toFixed(0) + " °";
-          this.live['windArrow'] =  "rotate(" + parseFloat(this.loop['windDir']) + 'deg)';
+          this.live['windArrow'] =  "rotate(" + this.rotateThis(parseFloat(this.loop['windDir'])) + 'deg)';
           this.live['windCompass'] = this.wind_cardinals(parseFloat(this.loop['windDir']).toFixed(1));
         }
         if(this.loop['windGust_kph'] != null) {

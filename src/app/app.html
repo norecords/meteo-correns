@@ -22,10 +22,15 @@
       <button menuClose ion-item (click)="openPage('AboutPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
         À propos
       </button>
+      <ion-item>
+        <ion-toggle color="dark" (ionChange)="toggleAppTheme()"></ion-toggle>
+        <ion-label>Mode sombre</ion-label>
+          </ion-item>
     </ion-list>
   </ion-content>
+
 
 </ion-menu>
 
 <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
-<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+<ion-nav [root]="rootPage" [class]="selectedTheme" #content swipeBackEnabled="false"></ion-nav>

@@ -19,14 +19,14 @@ export class ApiProvider {
   }
 
   getJsonDayCharts(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=daycharts')
+    return this.http.get('https://meteo.correns.org/api/app.php?q=chartsday')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getJsonWeekCharts(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=weekcharts')
+    return this.http.get('https://meteo.correns.org/api/app.php?q=chartsweek')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
@@ -55,6 +55,13 @@ export class ApiProvider {
 
   getJsonAlmanach(){
     return this.http.get('https://meteo.correns.org/api/app.php?q=almanach')
+    .map(this.extractData)
+    .do(this.logResponse)
+    .catch(this.catchError)
+  }
+
+  getJsonAbout(){
+    return this.http.get('https://meteo.correns.org/api/app.php?q=about')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)

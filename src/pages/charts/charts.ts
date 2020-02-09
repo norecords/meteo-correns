@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
 import { ApiProvider } from '../../providers/api/api' // Import our provider. Also included in charts.module.ts file
-
-declare var Highcharts : any;
+import * as HighStock from 'highcharts/highstock';
+import * as moment from 'moment';
+import 'moment/locale/fr';
 
 @IonicPage()
 @Component({
@@ -12,9 +13,15 @@ declare var Highcharts : any;
 
 export class ChartsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {}
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public loadingCtrl: LoadingController,
+              private apiProvider: ApiProvider) {}
 
   data: void;
+  dateTime : number;
+  longTitle : string;
+  shortTitle : string;
   weather = [];
 
   ionViewDidLoad() {
@@ -35,534 +42,354 @@ export class ChartsPage {
    
         let outTemp = [];
         let dewpoint = [];
-        let windchill = [];
-        let UV = [];
-        let outHumidity = [];
-        let barometer = [];
-        let windSpeed = [];
+        let windDir = [];
         let windGust = [];
-        let rain = [];
+        let windSpeed = [];
         let rainRate = [];
-        let argensNiv = [];
-        let argensDeb = [];
-        let chartsTitle = [];
-        let chartsLittleTitle = [];
-        let sunriseTime = [];
-        let sunsetTime = [];
-        let plotTodayRise = [];
-        let plotTodaySet  = [];
-        let plotLastDayRise = [];
-        let plotLastDaySet = []; 
-        let plotTonightRise = [];
-        let plotTonightSet = [];
-        let plotLastNightRise = [];
-        let plotLastNightSet = [];
-        let execTime = [];
-   
-        if(this.weather['0']['outTemp'].length > 0) {
-   
+        let rainTotal = [];
+        let barometer = [];
+        let UV = [];
 
-          for(let i = 0; i < this.weather['0']['outTemp'].length; i++) {
-        outTemp.push(
-                [this.weather['13']['dateTime'][i], this.weather['0']['outTemp'][i]]
+        if(this.weather['temperature']['series']['outTemp']['data'].length > 0) {
+            // dateTime
+            this.dateTime = this.weather['temperature']['series']['outTemp']['data']['0']['0'] / 1000;
+            this.shortTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY');
+            this.longTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY') + ' depuis minuit';
+            }      
+   
+        if(this.weather['temperature']['series']['outTemp']['data'].length > 0) {
+          // outTemp
+          for(let i = 0; i < this.weather['temperature']['series']['outTemp']['data'].length; i++) {
+            outTemp.push(
+              [this.weather['temperature']['series']['outTemp']['data'][i]['0'], this.weather['temperature']['series']['outTemp']['data'][i]['1']]
             );
           }
-   
-          for(let i = 0; i < this.weather['1']['dewpoint'].length; i++) {
+          // dewpoint
+          for(let i = 0; i < this.weather['temperature']['series']['dewpoint']['data'].length; i++) {
             dewpoint.push(
-              [this.weather['13']['dateTime'][i], this.weather['1']['dewpoint'][i]]
+              [this.weather['temperature']['series']['dewpoint']['data'][i]['0'], this.weather['temperature']['series']['dewpoint']['data'][i]['1']]
             );
           }
-   
-          for(let i = 0; i < this.weather['2']['windchill'].length; i++) {
-            windchill.push(
-              [this.weather['13']['dateTime'][i], this.weather['2']['windchill'][i]]
+          // WindDir
+          for(let i = 0; i < this.weather['vent']['series']['windDir']['data'].length; i++) {
+            windDir.push(
+              [this.weather['vent']['series']['windDir']['data'][i]['0'], this.weather['vent']['series']['windDir']['data'][i]['1']]
             );
           }
-   
-          for(let i = 0; i < this.weather['3']['UV'].length; i++) {
-            UV.push(
-              [this.weather['13']['dateTime'][i], this.weather['3']['UV'][i]]
-            );
-          }
-   
-          for(let i = 0; i < this.weather['4']['outHumidity'].length; i++) {
-            outHumidity.push(
-              [this.weather['13']['dateTime'][i], this.weather['4']['outHumidity'][i]]
-            );
-          }
-   
-          for(let i = 0; i < this.weather['5']['barometer'].length; i++) {
-            barometer.push(
-              [this.weather['13']['dateTime'][i], this.weather['5']['barometer'][i]]
-            );
-          }
-   
-          for(let i = 0; i < this.weather['6']['windSpeed'].length; i++) {
-            windSpeed.push(
-              [this.weather['13']['dateTime'][i], this.weather['6']['windSpeed'][i]]
-            );
-          }
-   
-          for(let i = 0; i < this.weather['7']['windGust'].length; i++) {
+          // windGust
+          for(let i = 0; i < this.weather['vent']['series']['windGust']['data'].length; i++) {
             windGust.push(
-              [this.weather['13']['dateTime'][i], this.weather['7']['windGust'][i]]
+              [this.weather['vent']['series']['windGust']['data'][i]['0'], this.weather['vent']['series']['windGust']['data'][i]['1']]
             );
           }
-   
-       if(this.weather['8']['rain'][0] != null) {
-             for(let i = 0; i < this.weather['8']['rain'].length; i++) {
-               rain.push(
-                 [this.weather['8']['rain'][i]['0'], this.weather['8']['rain'][i]['1']]
-               );
-             }
-       }
-   
-       if(this.weather['9']['rainRate'][0] != null) {
-             for(let i = 0; i < this.weather['9']['rainRate'].length; i++) {
-               rainRate.push(
-                 [this.weather['9']['rainRate'][i]['0'], this.weather['9']['rainRate'][i]['1']]
-               );
-             }
-       }
-   
-          for(let i = 0; i < this.weather['10']['argensNiv'].length; i++) {
-            argensNiv.push(
-              [this.weather['14']['dateHydro'][i], this.weather['10']['argensNiv'][i]]
+          // windSpeed
+          for(let i = 0; i < this.weather['vent']['series']['windSpeed']['data'].length; i++) {
+            windSpeed.push(
+              [this.weather['vent']['series']['windSpeed']['data'][i]['0'], this.weather['vent']['series']['windSpeed']['data'][i]['1']]
             );
           }
-   
-          for(let i = 0; i < this.weather['11']['argensDeb'].length; i++) {
-            argensDeb.push(
-              [this.weather['14']['dateHydro'][i], this.weather['11']['argensDeb'][i]]
+          // rainRate
+          for(let i = 0; i < this.weather['pluie']['series']['rainRate']['data'].length; i++) {
+            rainRate.push(
+              [this.weather['pluie']['series']['rainRate']['data'][i]['0'], this.weather['pluie']['series']['rainRate']['data'][i]['1']]
             );
           }
-   
-          chartsTitle = this.weather['12']['chartsTitle'].toUpperCase()
-   //       this.chartsTitle = this.weather['12']['chartsTitle']
-          chartsLittleTitle = this.weather['12']['chartsLittleTitle']
-          sunriseTime = this.weather['12']['sunriseTime']
-          sunsetTime = this.weather['12']['sunsetTime']
-          plotTodayRise = this.weather['12']['plotTodayRise']
-          plotTodaySet = this.weather['12']['plotTodaySet']
-          plotLastDayRise = this.weather['12']['plotLastDayRise']
-          plotLastDaySet = this.weather['12']['plotLastDaySet']
-          plotTonightRise = this.weather['12']['plotTonightRise']
-          plotTonightSet = this.weather['12']['plotTonightSet']
-          plotLastNightRise = this.weather['12']['plotLastNightRise']
-          plotLastNightSet = this.weather['12']['plotLastNightSet']
-          execTime = this.weather['12']['execTime']
-
+          // rainSum
+          for(let i = 0; i < this.weather['pluie']['series']['rainTotal']['data'].length; i++) {
+            rainTotal.push(
+              [this.weather['pluie']['series']['rainTotal']['data'][i]['0'], this.weather['pluie']['series']['rainTotal']['data'][i]['1']]
+            );
+          }
+          // barometer
+          for(let i = 0; i < this.weather['barometre']['series']['barometer']['data'].length; i++) {
+            barometer.push(
+              [this.weather['barometre']['series']['barometer']['data'][i]['0'], this.weather['barometre']['series']['barometer']['data'][i]['1']]
+            );
+          }
+          // UV
+          for(let i = 0; i < this.weather['rayonnement_solaire_et_uv']['series']['UV']['data'].length; i++) {
+            UV.push(
+              [this.weather['rayonnement_solaire_et_uv']['series']['UV']['data'][i]['0'], this.weather['rayonnement_solaire_et_uv']['series']['UV']['data'][i]['1']]
+            );
+          }
           loader.dismiss()
-
-        }
-          this.data = this.showHighchart(outTemp,dewpoint,windchill,UV,outHumidity,barometer,windSpeed,windGust,rain,rainRate,argensNiv,argensDeb,chartsTitle,chartsLittleTitle,sunriseTime,sunsetTime,plotTodayRise,plotTodaySet,plotLastDayRise,plotLastDaySet,plotTonightRise,plotTonightSet,plotLastNightRise,plotLastNightSet,execTime)
+          }
+          this.data = this.showHighchart(outTemp,dewpoint,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,UV,this.shortTitle,this.longTitle)
+  
         });
-
   }
-
-  showHighchart(outTemp,dewpoint,windchill,UV,outHumidity,barometer,windSpeed,windGust,rain,rainRate,argensNiv,argensDeb,chartsTitle,chartsLittleTitle,sunriseTime,sunsetTime,plotTodayRise,plotTodaySet,plotLastDayRise,plotLastDaySet,plotTonightRise,plotTonightSet,plotLastNightRise,plotLastNightSet,execTime){
- 
-//console.log(outTemp);
-
-
-  Highcharts.setOptions({
-       lang: {
-         months: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-         weekdays: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
-       },
-
-    global : {
-       useUTC : false
-       }
-
-  });
-
-   Highcharts.stockChart('container', {
-
-        chart: {
-            height: 1000,
-        },
-
-    legend: {
+  showHighchart(outTemp,dewpoint,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,UV,shortTitle,longTitle){
+  
+  
+      HighStock.chart('chartsDay', {
+  chart: {
+          height: 1350,
+          styledMode: true,
+      },
+  
+      rangeSelector: {
         enabled: true,
-        borderColor: 'grey',
-        borderWidth: 1,
-        layout: 'horizontal',
-        verticalAlign: 'bottom',
-        shadow: false
+        buttons: [{
+          type: 'hour',
+          count: 1,
+          text: '1h'
+      }, {
+          type: 'hour',
+          count: 2,
+          text: '2h'
+      }, {
+          type: 'hour',
+          count: 6,
+          text: '6h'
+      },{
+          type: 'all',
+          text: 'Tout'
+      }],
+      buttonTheme: {
+          width: 25
+      },
+      selected: 3,
+      inputEnabled: false
+       
     },
-
-    credits: {
-        text: execTime,
-        href: 'https://meteo.correns.org'
-    },
-
-        rangeSelector: {
-            buttons: [{
-                type: 'hour',
-                count: 1,
-                text: '1H'
-            }, {
-                type: 'hour',
-                count: 6,
-                text: '6H'
-            }, {
-                type: 'hour',
-                count: 12,
-                text: '12H'
-            }, {
-                type: 'minute',
-                count: 1439,
-                text: '24H'
-            }],
-            selected: 3,
-            inputEnabled: false,
-            buttonSpacing: 5,
-            buttonTheme: {
-              width: 30,
-              r: 2,
-              style: {
-                color: '#039',
-                fontWeight: 'bold'
-              },
-            },
+  
+  legend: {
+      enabled: true,
+      borderColor: 'grey',
+      borderWidth: 1,
+      layout: 'horizontal',
+      verticalAlign: 'bottom',
+      shadow: false
+  },
+  
+  credits: {
+      text: 'Météo Correns',
+      href: 'https://meteo.correns.org'
+  },
+  
+  xAxis: {
+      type: 'datetime',
+      crosshair: true,
+  
+  },
+  
+      yAxis: [{
+          labels: { // temp
+              align: 'right',
+              x: -3
+          },
+          title: {
+              text: 'Température',
+          },
+          height: '250px',
+          lineWidth: 2
+        },{
+          labels: { // UV
+              align: 'center'
+          },
+          title: {
+              text: 'UV',
+          },
+          height: '250px',
+          opposite: true,
+          lineWidth: 2
+        }, /*{ // windDir
+          opposite: true,
+          labels: {
+              align: 'right',
+              x: 8
+          },
+          title: {
+              text: 'Direction'
+          },
+          top: '25%',
+          height: '250px',
+          offset: 0,
+      },*/ { // windspeed
+        labels: {
+            align: 'right',
+            x: 8
         },
-
-    xAxis: {
-        type: 'datetime',
-        crosshair: true,
-        plotBands: [{ // mark the daylight
-            color: '#FCFFC5',
-            from: plotTodayRise,
-            to: plotTodaySet
-	},{
-            color: '#FCFFC5',
-            from: plotLastDayRise,
-            to: plotLastDaySet
-        },{
-            color: '#ccccff',
-            from: plotTonightRise,
-            to: plotTonightSet
-
-        },{
-            color: '#ccccff',
-            from: plotLastNightRise,
-            to: plotLastNightSet
-        }],
-        plotLines: [{
-            color: '#D3D3D3',
-            width: 1,
-            dashStyle: 'shortdash',
-            value: sunsetTime,
-            zIndex: 1,
-            label: {
-               text: 'Coucher de soleil'
-            }
-
-        }, {
-            color: '#D3D3D3',
-            width: 1,
-            dashStyle: 'shortdash',
-            value: sunriseTime,
-            zIndex: 1,
-            label: {
-               text: 'Lever de soleil'
-            }
-        }]
-    },
-
-        yAxis: [{
-            labels: {
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text: 'Température (°C)'
-            },
-            height: '170px',
-            lineWidth: 2
-        }, {
-            opposite: false,
-            labels: {
-                align: 'right',
-                x: 8
-            },
-            title: {
-                text: 'Index UV'
-            },
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-
-        }, {
-            opposite: true,
-            labels: {
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text: 'Humidité (%)'
-            },
-            top: '25%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-        }, {
-            opposite: false,
-            labels: {
-                align: 'right',
-                x: 25
-            },
-            title: {
-                text: 'pression (hPa)'
-            },
-            top: '25%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-        }, {
-            opposite: true,
-            labels: {
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text: 'Vitesse Vent (km/h)'
-            },
-            top: '50%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-        }, {
-            opposite: true,
-            labels: {
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text: 'Pluie (mm)'
-            },
-            top: '75%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-        }, {
-            opposite: true,
-            labels: {
-		enabled: false,
-                align: 'right',
-                x: 33
-            },
-            title: {
-                text: null
-            },
-            top: '75%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-        }, {
-            opposite: false,
-            labels: {
-                align: 'right',
-                x: 20
-            },
-            title: {
-                text: 'Hauteur (m)'
-            },
-            top: '75%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-        }, {
-            opposite: false,
-            labels: {
-                enabled :false,
-                align: 'right',
-                x: 0
-            },
-            title: {
-                text: null
-            },
-            top: '75%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-
-        }],
-
         title: {
-            text: chartsTitle
+            text: 'Vent'
         },
-
-        subtitle: {
-            text: null
-        },
-
-        plotOptions: {
-            series: {
-                showInNavigator: false
-            }
-        },
-
-
-        tooltip: {
-            pointFormat: '{point.x:%e %b. %H:%M}<br><span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br>',
-            valueDecimals: 2,
-	    valueSuffix: '°C',
-//            split: true
-        shared: true
-        },
-
-
-        series: [{
-            name: 'Temp. extérieure',
-            data: outTemp,
-            showInNavigator: true,
-            yAxis: 0
-
-        },{
-           name: 'Point de rosée',
-            data: dewpoint,
-            yAxis: 0
-        },{
-           name: 'Refroid. éolien',
-            data: windchill,
-            yAxis: 0
-        },{
-           name: 'Indice UV',
-            data: UV,
-            yAxis: 1,
-            showInNavigator: false,
-            lineWidth: 1,
-            tooltip: {
-                valueDecimals: 1,
-                valueSuffix: ''
-            },
-           states: {
-                hover: {
-                    lineWidthPlus: 1
-                }
-            }
-        },{
-           name: 'Humidité extérieure',
-            data: outHumidity,
-            yAxis: 2,
-            tooltip: {
-                valueDecimals: 0,
-	        valueSuffix: '%'
-            }
-        },{
-           name: 'Pression',
-            data: barometer,
-            yAxis: 3,
-            tooltip: {
-                valueDecimals: 1,
-                valueSuffix: ' hPa'
-            }
-        },{
-           name: 'Vent',
-            data: windSpeed,
-            yAxis: 4,
-            tooltip: {
-                valueDecimals: 1,
-                valueSuffix: ' km/h'
-            }
-        },{
-           name: 'Rafale',
-            data: windGust,
-            yAxis: 4,
-            lineWidth: 0,
+        top: '25%',
+        height: '250px',
+        offset: 0,
+        lineWidth: 2
+  
+    }, { // rain
+      labels: {
+          align: 'right',
+          x: 8
+      },
+      title: {
+          text: 'Pluie'
+      },
+      top: '50%',
+      height: '250px',
+      offset: 0,
+      lineWidth: 2
+  
+  }, { // barometer
+    labels: {
+        align: 'right',
+        x: 8
+    },
+    title: {
+        text: 'Baromètre'
+    },
+    top: '75%',
+    height: '250px',
+    offset: 0,
+    lineWidth: 2
+  }],
+  
+      title: {
+          text: longTitle
+      },
+  
+      subtitle: {
+          text: null
+      },
+  
+      plotOptions: {
+          series: {
+              showInNavigator: false,
+          },
+          area: {
+            lineWidth: 2,
             marker: {
-                enabled: true,
-                radius: 3
+                enabled: false,
+                radius: 2
             },
-            tooltip: {
-                valueDecimals: 1,
-                valueSuffix: ' km/h'
+            threshold: null,
+            softThreshold: true
+        },
+        line: {
+            lineWidth: 2,
+            marker: {
+                enabled: false,
+                radius: 2
             },
-           states: {
-                hover: {
-                    lineWidthPlus: 0
-                }
-            }
+        },
+        spline: {
+            lineWidth: 2,
+            marker: {
+                enabled: false,
+                radius: 2
+            },
+        },
+        areaspline: {
+            lineWidth: 2,
+            fillOpacity: 0.5,
+            marker: {
+                enabled: false,
+                radius: 2
+            },
+            threshold: null,
+            softThreshold: true
+        },
+      },
 
+      tooltip: {
+        pointFormat: '{point.x:%e %b. %Y %H:%M}<br><span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br>',
+        valueDecimals: 2,
+        valueSuffix: '°C',
+        split: true
+      },
+  
+      series: [{
+          name: 'Température.',
+          data: outTemp,
+          type: 'line',
+          showInNavigator: true,
+          yAxis: 0
         },{
-           name: 'Pluie',
-            data: rain,
-            yAxis: 5,
-            type: 'column',
-            tooltip: {
-                valueDecimals: 1,
-                valueSuffix: ' mm'
-            }
+          name: 'Point de rosée',
+           data: dewpoint,
+           type: 'line',
+           yAxis: 0
+          },{
+            name: 'UV',
+             data: UV,
+             type: 'line',
+             lineWidth: 1,
+             yAxis: 1,
+
+         },/*{
+            name: 'Direction',
+             data: windDir,
+             type: 'line',
+             lineWidth: 0,
+             yAxis: 1,
+             marker: {
+              enabled: true
+             }
+         },*/{
+          name: 'Rafale',
+           data: windGust,
+           type: 'areaspline',
+           yAxis: 2,
+           tooltip: {
+               valueDecimals: 1,
+         valueSuffix: ' km/h'
+           }
        },{
-           name: 'Taux de pluie',
-            data: rainRate,
-            yAxis: 6,
-            lineWidth: 0,
-            marker: {
-                enabled: true,
-                radius: 4
-            },
-            tooltip: {
-                valueDecimals: 1,
-                valueSuffix: ' mm/h'
-            },
-           states: {
-                hover: {
-                    lineWidthPlus: 0
-                }
-            }
-        },{
-           name: 'Hauteur Argens',
-            data: argensNiv,
-            yAxis: 7,
-            tooltip: {
-                valueDecimals: 2,
-                valueSuffix: ' m'
-            }
-        },{
-           name: 'Débit Argens',
-            data: argensDeb,
-            yAxis: 8,
-            lineWidth: 0,
-            marker: {
-                enabled: true,
-                radius: 3
-            },
-            tooltip: {
-                valueDecimals: 2,
-                valueSuffix: ' m3'
-            },
-           states: {
-                hover: {
-                    lineWidthPlus: 0
-                }
-            }
-
-
-        }],
-
-        responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 500
-                },
-                chartOptions: {
-                    chart: {
-                        height: 1150
-                    }, 
-                    title: {
-                        text : chartsLittleTitle
-                    }
-
-                }
-            }]
-        }
-
-    });
-
+        name: 'Vitesse',
+         data: windSpeed,
+         type: 'areaspline',
+         yAxis: 2,
+         tooltip: {
+             valueDecimals: 1,
+       valueSuffix: ' km/h'
+         }
+     },{
+      name: 'Taux',
+       data: rainRate,
+       type: 'column',
+       yAxis: 3,
+       tooltip: {
+           valueDecimals: 1,
+     valueSuffix: ' mm/h'
+       }
+   },{
+    name: 'Total',
+     data: rainTotal,
+     type: 'line',
+     yAxis: 3,
+     tooltip: {
+         valueDecimals: 1,
+   valueSuffix: ' mm'
+     }
+  },{
+  name: 'Pression',
+   data: barometer,
+   type: 'line',
+   yAxis: 4,
+   tooltip: {
+       valueDecimals: 1,
+  valueSuffix: ' hPa'
+   }
+  }],
+  
+      responsive: {
+          rules: [{
+              condition: {
+                  maxWidth: 500
+              },
+              chartOptions: {
+                  chart: {
+                      height: 1600
+                  }, 
+                  title: {
+                      text : shortTitle
+                  }
+  
+              }
+          }]
+      }
+  
+      });
+    }
   }
-
-}

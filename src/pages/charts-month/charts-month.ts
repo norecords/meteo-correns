@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
-import { ApiProvider } from '../../providers/api/api' // Import our provider. Also included in charts-week.module.ts file
-
-declare var Highcharts : any;
+import { ApiProvider } from '../../providers/api/api' 
+import * as HighStock from 'highcharts/highstock';
+import * as moment from 'moment';
+import 'moment/locale/fr';
 
 @IonicPage()
 @Component({
@@ -11,10 +12,17 @@ declare var Highcharts : any;
 })
 export class ChartsMonthPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {}
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public loadingCtrl: LoadingController,
+              private apiProvider: ApiProvider) {}
 
   data: void;
-  weather = [];
+  dateTime : number;
+  longTitle : string;
+  //shortTitle : string;
+  weather = []
+  lastDateTime: number;
 
   ionViewDidLoad() {
 
@@ -47,7 +55,17 @@ export class ChartsMonthPage {
             outTemp.push(
               [this.weather['temperature']['series']['outTemp']['data'][i]['0'], this.weather['temperature']['series']['outTemp']['data'][i]['1']]
             );
+            this.lastDateTime = this.weather['temperature']['series']['outTemp']['data'][i]['0'] /1000;
           }
+
+          if(this.weather['temperature']['series']['outTemp']['data'].length > 0) {
+            // dateTime
+          this.dateTime = this.weather['temperature']['series']['outTemp']['data']['0']['0'] / 1000;
+          console.log(this.lastDateTime)
+          this.longTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY') + ' au ' + moment.unix(this.lastDateTime).format('dddd Do MMMM YYYY');
+          //this.shortTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY');
+          }
+
           // outTemp_min
           for(let i = 0; i < this.weather['temperature']['series']['outTemp_min']['data'].length; i++) {
             outTemp_min.push(
@@ -95,254 +113,274 @@ export class ChartsMonthPage {
           loader.dismiss()
 
           }
-          this.data = this.showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer)
+          this.data = this.showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,this.longTitle)
         });
 
   }
 
-  showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer){
+  showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,longTitle){
  
-//console.log(outTemp);
+    HighStock.chart('chartsMonth', {
 
+      chart: {
+        height: 1350,
+        styledMode: true,
+      },
 
-  Highcharts.setOptions({
-       lang: {
-         months: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-         weekdays: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
-       },
+  legend: {
+      enabled: true,
+      borderColor: 'grey',
+      borderWidth: 1,
+      layout: 'horizontal',
+      verticalAlign: 'bottom',
+      shadow: false
+  },
 
-    global : {
-       useUTC : false
-       }
+  credits: {
+      text: 'Météo Correns',
+      href: 'https://meteo.correns.org'
+  },
 
-  });
+  rangeSelector: {
+    enabled: true,
+    buttons: [{
+      type: 'day',
+      count: 7,
+      text: '7j'
+  }, {
+    type: 'day',
+    count: 14,
+    text: '14j'
+  },{
+      type: 'all',
+      text: 'Tout'
+  }],
+  buttonTheme: {
+      width: 25
+  },
+  selected: 2,
+  inputEnabled: false
+   
+},
 
-   Highcharts.stockChart('monthChart', {
+  xAxis: {
+      type: 'datetime',
+      crosshair: true,
 
-        chart: {
-            height: 1000,
-        },
+  },
 
-    legend: {
-        enabled: true,
-        borderColor: 'grey',
-        borderWidth: 1,
-        layout: 'horizontal',
-        verticalAlign: 'bottom',
-        shadow: false
-    },
-
-    credits: {
-        text: 'météo Correns',
-        href: 'https://meteo.correns.org'
-    },
-
-        rangeSelector: {
-            buttons: [{
-                type: 'day',
-                count: 2,
-                text: '1J'
-            }, {
-                type: 'day',
-                count: 7,
-                text: '1S'
-            }, {
-                type: 'week',
-                count: 2,
-                text: '2S'
-            }, {
-                type: 'day',
-                count: 28,
-                text: '1M'
-            }],
-            selected: 3,
-            inputEnabled: false,
-            buttonSpacing: 5,
-            buttonTheme: {
-              width: 30,
-              r: 2,
-              style: {
-                color: '#039',
-                fontWeight: 'bold'
-              },
-            },
-        },
-
-    xAxis: {
-        type: 'datetime',
-        crosshair: true,
-
-    },
-
-        yAxis: [{
-            labels: { // temp
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text: 'Température (°C)'
-            },
-            height: '170px',
-            lineWidth: 2
-          }, { // windDir
-            opposite: false,
-            labels: {
-                align: 'right',
-                x: 8
-            },
-            title: {
-                text: 'Direction'
-            },
-            top: '25%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
-        }, { // windspeed
+      yAxis: [{
+          labels: { // temp
+              align: 'right',
+              x: -3
+          },
+          title: {
+              text: 'Température'
+          },
+          height: '250px',
+          lineWidth: 2
+        }, { // windDir
+          opposite: true,
           labels: {
               align: 'right',
               x: 8
           },
           title: {
-              text: 'Vent'
+              text: 'Direction'
           },
           top: '25%',
-          height: '170px',
-          offset: 0,
-          lineWidth: 2
-
-      }, { // rain
+          height: '250px',
+          offset: 0
+      }, { // windspeed
         labels: {
             align: 'right',
             x: 8
         },
         title: {
-            text: 'Pluie'
+            text: 'Vent'
         },
-        top: '50%',
-        height: '170px',
+        top: '25%',
+        height: '250px',
         offset: 0,
         lineWidth: 2
 
-    }, { // barometer
+    }, { // rain
       labels: {
           align: 'right',
           x: 8
       },
       title: {
-          text: 'Baromètre'
+          text: 'Pluie'
       },
-      top: '75%',
-      height: '170px',
+      top: '50%',
+      height: '250px',
       offset: 0,
       lineWidth: 2
-  }],
 
-        title: {
-            text: 'month test'
+  }, { // barometer
+    labels: {
+        align: 'right',
+        x: 8
+    },
+    title: {
+        text: 'Baromètre'
+    },
+    top: '75%',
+    height: '250px',
+    offset: 0,
+    lineWidth: 2
+}],
+
+      title: {
+          text: longTitle
+      },
+
+      subtitle: {
+          text: null
+      },
+
+      plotOptions: {
+          series: {
+              showInNavigator: false
+          },
+          area: {
+            lineWidth: 2,
+            marker: {
+                enabled: false,
+                radius: 2
+            },
+            threshold: null,
+            softThreshold: true
         },
-
-        subtitle: {
-            text: null
+        line: {
+            lineWidth: 2,
+            marker: {
+                enabled: false,
+                radius: 2
+            },
         },
-
-        plotOptions: {
-            series: {
-                showInNavigator: false
-            }
+        spline: {
+            lineWidth: 2,
+            marker: {
+                enabled: false,
+                radius: 2
+            },
         },
-
-
-        tooltip: {
-            pointFormat: '{point.x:%e %b. %H:%M}<br><span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br>',
-            valueDecimals: 2,
-	    valueSuffix: '°C',
-//            split: true
-        shared: true
+        areaspline: {
+            lineWidth: 2,
+            fillOpacity: 0.5,
+            marker: {
+                enabled: false,
+                radius: 2
+            },
+            threshold: null,
+            softThreshold: true
         },
+      },
+
+      tooltip: {
+          pointFormat: '{point.x:%e %b. %Y}<br><span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br>',
+          valueDecimals: 2,
+    valueSuffix: '°C',
+      split: true,
+      shared: true
+      },
 
 
-        series: [{
-            name: 'Temp. maxi.',
-            data: outTemp,
-            showInNavigator: true,
-            yAxis: 0
+      series: [{
+          name: 'Temp. maxi.',
+          type: 'line',
+          data: outTemp,
+          yAxis: 0
+        },{
+          name: 'Temp. mini.',
+           data: outTemp_min,
+           type: 'line',
+           yAxis: 0
           },{
-            name: 'Temp. mini.',
-             data: outTemp_min,
-             yAxis: 0
-            },{
-              name: 'Direction',
-               data: windDir,
-               yAxis: 1,
-               marker: {
-                enabled: true
-              },
-              lineWidth: 0,
-               tooltip: {
-                   valueDecimals: 0,
-             valueSuffix: ' °'
-               }
-           },{
-            name: 'Rafale',
-             data: windGust,
-             yAxis: 2,
+            name: 'Direction',
+             data: windDir,
+             type: 'line',
+             yAxis: 1,
+             lineWidth: 0,
+             marker: {
+              enabled: true
+            },
              tooltip: {
-                 valueDecimals: 1,
-           valueSuffix: ' km/h'
-             }
+                 valueDecimals: 0,
+           valueSuffix: ' °'
+             }, 
+             states: {
+              hover: {
+                  lineWidthPlus: 0
+              }
+            }
          },{
-          name: 'Vitesse moyenne',
-           data: windSpeed,
+          name: 'Rafale',
+           data: windGust,
+           type: 'areaspline',
            yAxis: 2,
            tooltip: {
                valueDecimals: 1,
          valueSuffix: ' km/h'
            }
        },{
-        name: 'Taux',
-         data: rainRate,
-         yAxis: 3,
+        name: 'Vitesse moyenne',
+         data: windSpeed,
+         type: 'areaspline',
+         yAxis: 2,
          tooltip: {
              valueDecimals: 1,
-       valueSuffix: ' mm/h'
+       valueSuffix: ' km/h'
          }
      },{
-      name: 'Total',
-       data: rainTotal,
+      name: 'Taux',
+       data: rainRate,
+       type: 'column',
        yAxis: 3,
        tooltip: {
            valueDecimals: 1,
-     valueSuffix: ' mm'
+     valueSuffix: ' mm/h'
        }
    },{
-    name: 'Pression',
-     data: barometer,
-     yAxis: 4,
+    name: 'Total',
+     data: rainTotal,
+     type: 'line',
+     yAxis: 3,
      tooltip: {
          valueDecimals: 1,
-   valueSuffix: ' hPa'
+   valueSuffix: ' mm'
      }
- }],
+ },{
+  name: 'Pression',
+   data: barometer,
+   type: 'line',
+   yAxis: 4,
+   tooltip: {
+       valueDecimals: 1,
+ valueSuffix: ' hPa'
+   }
+}],
 
-        responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 500
-                },
-                chartOptions: {
-                    chart: {
-                        height: 1150
-                    }, 
-                    title: {
-                        text : 'little title'
-                    }
+      responsive: {
+          rules: [{
+              condition: {
+                  maxWidth: 500
+              },
+              chartOptions: {
+                  chart: {
+                      height: 1600
+                  }, 
+                  title: {
+                      text : longTitle
+                  }
 
-                }
-            }]
-        }
+              }
+          }]
+      }
 
-    });
+  });
 
-  }
+}
 
 }

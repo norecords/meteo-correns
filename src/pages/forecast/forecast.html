@@ -9,16 +9,16 @@
     
   <ion-toolbar  class="Fmenu" color="secondary">
     <ul>
-       <li [ngClass]="getFirstLiClass()" (click)="goToSlide(0); selected0=1"><span [innerHtml]="symbol0"></span><a>{{day0}}</a></li>
-       <li [ngClass]="{active: selected1=='1'}" (click)="goToSlide(1); selected1=1"><span [innerHtml]="symbol1"></span><a>{{day1}}</a></li>
-       <li [ngClass]="{active: selected2=='1'}" (click)="goToSlide(2); selected2=1"><span [innerHtml]="symbol2"></span><a>{{day2}}</a></li>
-       <li [ngClass]="{active: selected3=='1'}" (click)="goToSlide(3); selected3=1"><span [innerHtml]="symbol3"></span><a>{{day3}}</a></li>
-       <li [ngClass]="{active: selected4=='1'}" (click)="goToSlide(4); selected4=1"><span [innerHtml]="symbol4"></span><a>{{day4}}</a></li>
-       <li [ngClass]="{active: selected5=='1'}" (click)="goToSlide(5); selected5=1"><span [innerHtml]="symbol5"></span><a>{{day5}}</a></li>
-       <li [ngClass]="{active: selected6=='1'}" (click)="goToSlide(6); selected6=1"><span [innerHtml]="symbol6"></span><a>{{day6}}</a></li>
-       <li [ngClass]="{active: selected7=='1'}" (click)="goToSlide(7); selected7=1"><span [innerHtml]="symbol7"></span><a>{{day7}}</a></li>
-       <li [ngClass]="{active: selected8=='1'}" (click)="goToSlide(8); selected8=1"><span [innerHtml]="symbol8"></span><a>{{day8}}</a></li>
-       <li [ngClass]="{active: selected9=='1'}" (click)="goToSlide(9); selected9=1"><span [innerHtml]="symbol9"></span><a>{{day9}}</a></li>
+       <li [ngClass]="getFirstLiClass()" (click)="goToSlide(0); selected[0]=1"><span [innerHtml]="symbol[0]"></span><a>{{day[0]}}</a></li>
+       <li [ngClass]="{active: selected[1]=='1'}" (click)="goToSlide(1); selected[1]=1"><span [innerHtml]="symbol[1]"></span><a>{{day[1]}}</a></li>
+       <li [ngClass]="{active: selected[2]=='1'}" (click)="goToSlide(2); selected[2]=1"><span [innerHtml]="symbol[2]"></span><a>{{day[2]}}</a></li>
+       <li [ngClass]="{active: selected[3]=='1'}" (click)="goToSlide(3); selected[3]=1"><span [innerHtml]="symbol[3]"></span><a>{{day[3]}}</a></li>
+       <li [ngClass]="{active: selected[4]=='1'}" (click)="goToSlide(4); selected[4]=1"><span [innerHtml]="symbol[4]"></span><a>{{day[4]}}</a></li>
+       <li [ngClass]="{active: selected[5]=='1'}" (click)="goToSlide(5); selected[5]=1"><span [innerHtml]="symbol[5]"></span><a>{{day[5]}}</a></li>
+       <li [ngClass]="{active: selected[6]=='1'}" (click)="goToSlide(6); selected[6]=1"><span [innerHtml]="symbol[6]"></span><a>{{day[6]}}</a></li>
+       <li [ngClass]="{active: selected[7]=='1'}" (click)="goToSlide(7); selected[7]=1"><span [innerHtml]="symbol[7]"></span><a>{{day[7]}}</a></li>
+       <li [ngClass]="{active: selected[8]=='1'}" (click)="goToSlide(8); selected[8]=1"><span [innerHtml]="symbol[8]"></span><a>{{day[8]}}</a></li>
+       <li [ngClass]="{active: selected[9]=='1'}" (click)="goToSlide(9); selected[9]=1"><span [innerHtml]="symbol[9]"></span><a>{{day[9]}}</a></li>
       </ul>
   </ion-toolbar>
   
@@ -34,7 +34,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -48,7 +48,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -62,7 +62,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -76,7 +76,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -90,7 +90,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -104,7 +104,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -118,7 +118,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -132,7 +132,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -146,7 +146,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>
@@ -160,7 +160,7 @@
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>
         <td style="width:25%;text-align:right"><i class="wi wi-thermometer"></i> {{item.temp}}°C</td>
       </tr>
-      <tr style="background-color:#f2f2f2">
+      <tr class="bottom">
         <td style="width:25%">{{item.barometer}} hPa</td>
         <td style="text-align:center">{{item.wind}} km/h <i class="wi wi-wind from-{{item.windDirDeg}}-deg"></i></td>
         <td style="width:25%;text-align:right"><i class="wi wi-umbrella"></i> {{item.rain}} mm</td>

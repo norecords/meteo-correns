@@ -1,12 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the AboutPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { IonicPage, NavController, NavParams, LoadingController} from 'ionic-angular';
+import { ApiProvider } from '../../providers/api/api';
 
 @IonicPage()
 @Component({
@@ -15,10 +9,30 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class AboutPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+  weather = [];
+  loading: any;
+
+  constructor(public navCtrl: NavController,
+             public navParams: NavParams,
+             public loadingCtrl: LoadingController,
+             private apiProvider: ApiProvider) {}
 
   ionViewDidLoad() {
+    let loader = this.loadingCtrl.create({
+      content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+      cssClass: 'custom-loader-class'
+    });
+
+    loader.present()
+
+    setTimeout(() => {
+      loader.dismiss();
+    }, 20000);
+
+    this.apiProvider.getJsonAbout().subscribe(data => { 
+      this.weather = data 
+      loader.dismiss()     
+    });
     console.log('ionViewDidLoad AboutPage');
   }
 

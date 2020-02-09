@@ -8,6 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { MqttModule, MqttService , IMqttServiceOptions} from 'ngx-mqtt';
+import { SettingsProvider } from '../providers/settings/settings';
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
   hostname: 'iot.correns.org',
@@ -40,7 +41,8 @@ export function mqttServiceFactory() {
     StatusBar,
     Network,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    SettingsProvider
   ]
 })
 export class AppModule {}

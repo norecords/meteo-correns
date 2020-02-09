@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
 import { ApiProvider } from '../../providers/api/api' // Import our provider. Also included in charts-week.module.ts file
-
-declare var Highcharts : any;
+import * as HighStock from 'highcharts/highstock';
+import * as moment from 'moment';
+import 'moment/locale/fr';
 
 @IonicPage()
 @Component({
@@ -11,10 +12,16 @@ declare var Highcharts : any;
 })
 export class ChartsYearPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {}
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public loadingCtrl: LoadingController,
+              private apiProvider: ApiProvider) {}
 
   data: void;
-  weather = [];
+  dateTime : number;
+  longTitle : string;
+  //shortTitle : string;
+  weather = []
 
   ionViewDidLoad() {
 
@@ -40,6 +47,13 @@ export class ChartsYearPage {
         let rainRate = [];
         let rainTotal = [];
         let barometer = [];
+
+        if(this.weather['temperature']['series']['outTemp']['data'].length > 0) {
+          // dateTime
+          this.dateTime = this.weather['temperature']['series']['outTemp']['data']['0']['0'] / 1000;
+          //this.shortTitle = moment.unix(this.dateTime).format('dddd Do MMMM YYYY');
+          this.longTitle = 'Année ' + moment.unix(this.dateTime).format('YYYY');
+          }   
    
         if(this.weather['temperature']['series']['outTemp']['data'].length > 0) {
           // outTemp
@@ -95,32 +109,19 @@ export class ChartsYearPage {
           loader.dismiss()
 
           }
-          this.data = this.showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer)
+          this.data = this.showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,this.longTitle)
         });
 
   }
 
-  showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer){
+  showHighchart(outTemp,outTemp_min,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,longTitle){
  
-//console.log(outTemp);
 
-
-  Highcharts.setOptions({
-       lang: {
-         years: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-         weekdays: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
-       },
-
-    global : {
-       useUTC : false
-       }
-
-  });
-
-   Highcharts.stockChart('yearChart', {
+    HighStock.chart('chartsYear', {
 
         chart: {
-            height: 1000,
+          height: 1350,
+          styledMode: true,
         },
 
     legend: {
@@ -133,40 +134,31 @@ export class ChartsYearPage {
     },
 
     credits: {
-        text: 'météo Correns',
+        text: 'Météo Correns',
         href: 'https://meteo.correns.org'
     },
 
-        rangeSelector: {
-            buttons: [{
-                type: 'day',
-                count: 2,
-                text: '1J'
-            }, {
-                type: 'day',
-                count: 7,
-                text: '1S'
-            }, {
-                type: 'week',
-                count: 2,
-                text: '2S'
-            }, {
-                type: 'day',
-                count: 28,
-                text: '1M'
-            }],
-            selected: 3,
-            inputEnabled: false,
-            buttonSpacing: 5,
-            buttonTheme: {
-              width: 30,
-              r: 2,
-              style: {
-                color: '#039',
-                fontWeight: 'bold'
-              },
-            },
-        },
+    rangeSelector: {
+      enabled: true,
+      buttons: [{
+        type: 'day',
+        count: 14,
+        text: '14j'
+    }, {
+        type: 'month',
+        count: 1,
+        text: '1m'
+    },{
+        type: 'all',
+        text: 'Tout'
+    }],
+    buttonTheme: {
+        width: 25
+    },
+    selected: 2,
+    inputEnabled: false
+     
+  },
 
     xAxis: {
         type: 'datetime',
@@ -180,12 +172,12 @@ export class ChartsYearPage {
                 x: -3
             },
             title: {
-                text: 'Température (°C)'
+                text: 'Température'
             },
-            height: '170px',
+            height: '250px',
             lineWidth: 2
           }, { // windDir
-            opposite: false,
+            opposite: true,
             labels: {
                 align: 'right',
                 x: 8
@@ -194,9 +186,8 @@ export class ChartsYearPage {
                 text: 'Direction'
             },
             top: '25%',
-            height: '170px',
-            offset: 0,
-            lineWidth: 2
+            height: '250px',
+            offset: 0
         }, { // windspeed
           labels: {
               align: 'right',
@@ -206,7 +197,7 @@ export class ChartsYearPage {
               text: 'Vent'
           },
           top: '25%',
-          height: '170px',
+          height: '250px',
           offset: 0,
           lineWidth: 2
 
@@ -219,7 +210,7 @@ export class ChartsYearPage {
             text: 'Pluie'
         },
         top: '50%',
-        height: '170px',
+        height: '250px',
         offset: 0,
         lineWidth: 2
 
@@ -232,13 +223,13 @@ export class ChartsYearPage {
           text: 'Baromètre'
       },
       top: '75%',
-      height: '170px',
+      height: '250px',
       offset: 0,
       lineWidth: 2
   }],
 
         title: {
-            text: 'year test'
+            text: longTitle
         },
 
         subtitle: {
@@ -248,43 +239,83 @@ export class ChartsYearPage {
         plotOptions: {
             series: {
                 showInNavigator: false
-            }
+            },
+            area: {
+              lineWidth: 2,
+              marker: {
+                  enabled: false,
+                  radius: 2
+              },
+              threshold: null,
+              softThreshold: true
+          },
+          line: {
+              lineWidth: 2,
+              marker: {
+                  enabled: false,
+                  radius: 2
+              },
+          },
+          spline: {
+              lineWidth: 2,
+              marker: {
+                  enabled: false,
+                  radius: 2
+              },
+          },
+          areaspline: {
+              lineWidth: 2,
+              fillOpacity: 0.5,
+              marker: {
+                  enabled: false,
+                  radius: 2
+              },
+              threshold: null,
+              softThreshold: true
+          },
         },
-
 
         tooltip: {
             pointFormat: '{point.x:%e %b. %Y}<br><span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br>',
             valueDecimals: 2,
 	    valueSuffix: '°C',
-//            split: true
+        split: true,
         shared: true
         },
 
 
         series: [{
             name: 'Temp. maxi.',
+            type: 'line',
             data: outTemp,
-            showInNavigator: true,
             yAxis: 0
           },{
             name: 'Temp. mini.',
              data: outTemp_min,
+             type: 'line',
              yAxis: 0
             },{
               name: 'Direction',
                data: windDir,
+               type: 'line',
                yAxis: 1,
+               lineWidth: 0,
                marker: {
                 enabled: true
               },
-              lineWidth: 0,
                tooltip: {
                    valueDecimals: 0,
              valueSuffix: ' °'
-               }
+               }, 
+               states: {
+                hover: {
+                    lineWidthPlus: 0
+                }
+              }
            },{
             name: 'Rafale',
              data: windGust,
+             type: 'areaspline',
              yAxis: 2,
              tooltip: {
                  valueDecimals: 1,
@@ -293,6 +324,7 @@ export class ChartsYearPage {
          },{
           name: 'Vitesse moyenne',
            data: windSpeed,
+           type: 'areaspline',
            yAxis: 2,
            tooltip: {
                valueDecimals: 1,
@@ -301,6 +333,7 @@ export class ChartsYearPage {
        },{
         name: 'Taux',
          data: rainRate,
+         type: 'column',
          yAxis: 3,
          tooltip: {
              valueDecimals: 1,
@@ -309,6 +342,7 @@ export class ChartsYearPage {
      },{
       name: 'Total',
        data: rainTotal,
+       type: 'line',
        yAxis: 3,
        tooltip: {
            valueDecimals: 1,
@@ -317,6 +351,7 @@ export class ChartsYearPage {
    },{
     name: 'Pression',
      data: barometer,
+     type: 'line',
      yAxis: 4,
      tooltip: {
          valueDecimals: 1,
@@ -331,10 +366,10 @@ export class ChartsYearPage {
                 },
                 chartOptions: {
                     chart: {
-                        height: 1150
+                        height: 1600
                     }, 
                     title: {
-                        text : 'little title'
+                        text : longTitle
                     }
 
                 }

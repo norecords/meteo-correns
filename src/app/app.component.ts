@@ -3,19 +3,42 @@ import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Network } from '@ionic-native/network';
+import {SettingsProvider} from "../providers/settings/settings";
+import * as HighStock from 'highcharts/highstock';
 
+HighStock.setOptions({
+  lang: {
+    months: [
+        'Janvier', 'Février', 'Mars', 'Avril',
+        'Mai', 'Juin', 'Juillet', 'Août',
+        'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ],
+    weekdays: [
+        'Dimanche', 'Lundi', 'Mardi', 'Mercredi',
+        'Jeudi', 'Vendredi', 'Samedi'
+    ],
+    shortMonths : [
+      "Jan", "Fev", "Mar", "Avr", "Mai", "Juin", "Juil", "Août",
+       "Sep", "Oct", "Nov", "Dec"
+      ]
+  },
+  time: {
+    useUTC: false
+}
+});
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
+  selectedTheme: String;
 
   rootPage: any = 'HomePage'; //#### LAZY LOADING: LOAD ALL PAGES AS STRING ####
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public events: Events, public network: Network) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public events: Events, public network: Network, private settings: SettingsProvider,) {
     this.initializeApp();
-
+    this.settings.getActiveTheme().subscribe(val => this.selectedTheme = val);
   }
 
   initializeApp() {
@@ -28,7 +51,7 @@ export class MyApp {
       this.statusBar.show();
     });
   }
-
+  
 
 
   openPage(page) {
@@ -36,4 +59,14 @@ export class MyApp {
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page);
   }
+
+  toggleAppTheme() {
+    if (this.selectedTheme === 'light-theme') {
+      this.settings.setActiveTheme('dark-theme');
+    } else {
+      this.settings.setActiveTheme('light-theme');
+    }
+  }
+
 }
+
