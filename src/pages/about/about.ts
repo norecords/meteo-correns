@@ -20,18 +20,16 @@ export class AboutPage {
   ionViewDidLoad() {
     let loader = this.loadingCtrl.create({
       content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+      duration : 20000,
       cssClass: 'custom-loader-class'
     });
-
     loader.present()
-
-    setTimeout(() => {
-      loader.dismiss();
-    }, 20000);
 
     this.apiProvider.getJsonAbout().subscribe(data => { 
       this.weather = data 
-      loader.dismiss()     
+      setTimeout(() => {
+        loader.dismiss();
+      }, 500);  
     });
     console.log('ionViewDidLoad AboutPage');
   }

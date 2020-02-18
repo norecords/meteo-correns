@@ -25,7 +25,8 @@
     "@ionic-native/splash-screen": "~4.18.0",
     "@ionic-native/status-bar": "~4.18.0",
     "@ionic/storage": "2.2.0",
-    "cordova-android": "8.1.0",
+    "cordova-android": "^8.1.0",
+    "cordova-plugin-proguard": "^2.1.0",
     "handlebars": "^4.0.11",
     "highcharts": "^8.0.0",
     "ionic-angular": "3.9.2",
@@ -60,7 +61,8 @@
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-whitelist": {},
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-network-information": {}
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-proguard": {}
     }
   }
 }

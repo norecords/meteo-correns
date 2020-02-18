@@ -35,6 +35,7 @@ export class MyApp {
   selectedTheme: String;
 
   rootPage: any = 'HomePage'; //#### LAZY LOADING: LOAD ALL PAGES AS STRING ####
+  header = []
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public events: Events, public network: Network, private settings: SettingsProvider,) {
     this.initializeApp();
@@ -51,8 +52,6 @@ export class MyApp {
       this.statusBar.show();
     });
   }
-  
-
 
   openPage(page) {
     // Reset the content nav to have just this page
@@ -63,10 +62,13 @@ export class MyApp {
   toggleAppTheme() {
     if (this.selectedTheme === 'light-theme') {
       this.settings.setActiveTheme('dark-theme');
+      this.header['button'] = { 'background-color': 'transparent', 'color': 'white' };
+      this.header['backgd'] = { 'background-color': '#333333' };
     } else {
       this.settings.setActiveTheme('light-theme');
+      this.header['button'] = { 'background-color': 'transparent' };
+      this.header['backgd'] = { 'background-color': '#FFFFFF' };
     }
   }
 
 }
-

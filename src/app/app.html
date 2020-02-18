@@ -1,36 +1,36 @@
+
 <ion-menu [content]="content">
   <ion-header>
-    <ion-toolbar>
+    <ion-toolbar [ngStyle]="header['backgd']">
       <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  <ion-content>
+  <ion-content [ngStyle]="header['backgd']">
     <ion-list>
-      <button menuClose ion-item (click)="openPage('HomePage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+      <button menuClose ion-item (click)="openPage('HomePage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
         Direct
       </button>
-      <button menuClose ion-item (click)="openPage('ChartsPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+      <button menuClose ion-item (click)="openPage('ChartsPage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
         Graphiques
       </button>
-      <button menuClose ion-item (click)="openPage('ForecastPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+      <button menuClose ion-item (click)="openPage('ForecastPage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
         Prévisions
       </button>
-      <button menuClose ion-item (click)="openPage('AlmanacPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+      <button menuClose ion-item (click)="openPage('AlmanacPage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
         Almanach
       </button>
-      <button menuClose ion-item (click)="openPage('AboutPage')"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+      <button menuClose ion-item (click)="openPage('AboutPage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
         À propos
       </button>
-      <ion-item>
-        <ion-toggle color="dark" (ionChange)="toggleAppTheme()"></ion-toggle>
+      <ion-item [style.background-color]="'transparent'" [ngStyle]="header['button']">
+        <ion-toggle color="light" (ionChange)="toggleAppTheme()"></ion-toggle>
         <ion-label>Mode sombre</ion-label>
           </ion-item>
     </ion-list>
   </ion-content>
-
-
 </ion-menu>
+
+
 
 <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
 <ion-nav [root]="rootPage" [class]="selectedTheme" #content swipeBackEnabled="false"></ion-nav>

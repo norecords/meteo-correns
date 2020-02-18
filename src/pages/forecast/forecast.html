@@ -28,7 +28,7 @@
 
 <ion-slides #slides (ionSlideWillChange)="slideChanged()">
   <ion-slide>
-    <table *ngFor="let item of weather.day0">
+    <table *ngFor="let item of weather.hour">
       <tr>
         <td style="width:25%">{{item.time}}</td>
         <td style="text-align:center"><img class="yricon" src="assets/imgs/yr/{{item.symbol}}.png"></td>

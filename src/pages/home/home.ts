@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, LoadingController, NavController, NavParams, ToastController, Toast } from 'ionic-angular';
 import { ApiProvider } from '../../providers/api/api';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subscription } from 'rxjs/Subscription';
@@ -22,6 +22,7 @@ export class HomePage {
   dateTime : any; // use to convert unix epoch to date
   networkStatus : boolean;
 
+ private toastInstance: Toast;
   private subs : Subscription;   // MQTT sub
 
   constructor(public navCtrl: NavController,
@@ -30,7 +31,7 @@ export class HomePage {
               public tost : ToastController,
               public network : Network, 
               private apiProvider: ApiProvider,
-              private mqttService: MqttService){
+              private mqttService: MqttService) {
 
     this.network.onDisconnect().subscribe(() => {
       console.log('network disconnected')
@@ -57,21 +58,15 @@ export class HomePage {
     this.mqttService.onConnect.subscribe((e) => {
       console.log('MQTT onConnect', e);
       if(e['cmd'] == 'connack') {
+        this.presentToast('Connecté au serveur live.', 5000)
         this.live['showOffline'] = false;
         this.live['showOnline'] = false;
-        this.tost.create({
-          message: 'Connecté au serveur live.',
-          duration: 5000
-        }).present();
       }
     });
     this.mqttService.onError.subscribe((e) => {
         console.log('MQTT Erreur de connection...')
         console.log('MQTT onError', e);
-        this.tost.create({
-          message: 'Une erreur est survenue, veuillez vérifier votre connection.',
-          duration: 8000
-        }).present();
+        this.presentToast('Une erreur est survenue, veuillez vérifier votre connection.', 8000)
         this.live['showOffline'] = true;
         this.live['showOnline'] = false;
     });
@@ -81,28 +76,38 @@ export class HomePage {
         this.live['showOnline'] = false;
     });
     this.mqttService.onReconnect.subscribe(() => {
-      //this.tost.create({
-      //  message: 'Nouvelle tentative de connection au live.',
-      //  duration: 3000
-      //}).present();
         this.live['showOffline'] = false;
         this.live['showOnline'] = false;
     });
 
   }
 
+  private presentToast(mes,duration) {
+    if(this.toastInstance) {
+      return;
+    }
+    this.toastInstance = this.tost.create({
+      message: mes,
+      duration: duration,
+      position: 'bottom'
+    });
+    this.toastInstance.onDidDismiss(() => {
+      this.toastInstance = null;
+    });
+    this.toastInstance.present();
+  }
+
   // Transform mqtt value windDir degree in cardinal point
   private wind_cardinals(deg) {
     var directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO','N']
     var cardinal = directions[Math.round(deg / 22.5)];
-    // if (cardinal == 'N2') cardinal = 'N';
     return cardinal;
   }
 
   // Handle wind arrow rotation with the ability to "rollover" past 0 
 // without spinning back around. e.g 350 to 3 would spin back around
 // https://stackoverflow.com/a/19872672/1177153
-public rotateThis(newRotation) {
+private rotateThis(newRotation) {
   if ( newRotation == "N/A") { return; }
   var currentRotation;
   var finalRotation = finalRotation || 0; // if finalRotation undefined or 0, make 0, else finalRotation
@@ -127,7 +132,7 @@ public rotateThis(newRotation) {
   }
 
   // colorize outTemp class span
-  public temp_colorize(temp) {
+  private temp_colorize(temp) {
     if ( temp <= 0 ) {
         var color = "#1278c8";
     } else if ( temp <= -3.8 ) {
@@ -166,14 +171,10 @@ public rotateThis(newRotation) {
   // load main Json
   private loadJson() {
     let loader = this.loadingCtrl.create({
-      content: '<h2>Chargement des données</h2>Téléchargement en cours...'
+      content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+      duration: 20000
     });
-
     loader.present()
-    // timeout if loading json file failed or too long to load..
-    setTimeout(() => {
-      loader.dismiss();
-    }, 20000);
 
     this.apiProvider.getLive().subscribe(data => { 
       this.weather = data;
@@ -212,7 +213,11 @@ public rotateThis(newRotation) {
         this.summaries['monthRainSum'] = this.weather['month']['rainSum'];
         this.summaries['monthRainRateMax'] = this.weather['month']['rainRateMax'];
       // Dismiss loader
-      if (this.weather['current']['datetime_raw'] =! null) loader.dismiss();
+      if (this.weather['current']['datetime_raw'] =! null) {
+        setTimeout(() => {
+          loader.dismiss();
+        }, 500);
+      }
     });   
   }
 
@@ -243,26 +248,6 @@ public rotateThis(newRotation) {
         
       });
     }, 300000); // 5 minutes
-  }
-
-  // Refresher function
-  load(refresher) {
-    if (navigator.onLine) {
-      console.log('Internet is connected');
-      setTimeout(() => {
-        refresher.complete();
-      }, 20000);
-      // load Json function
-      this.loadJson();
-        
-      refresher.complete();
-      console.log("Json refresh completed")
-    } else {
-      this.tost.create({
-        message: 'Une erreur est survenue, veuillez vérifier votre connection.',
-        duration: 8000
-      }).present();
-    }
   }
 
   private mqttSubscribe() {

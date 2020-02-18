@@ -16,11 +16,6 @@ export class ForecastPage {
   day = [];
   symbol = [];
   loading: any;
-
-  slideOpts = {
-    initialSlide: 2,
-    speed: 400
-  };
   
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -62,59 +57,53 @@ export class ForecastPage {
     else if (currentIndex == 9) this.selected[9] = 1;
     if (previousIndex == 9 && currentIndex == 10) this.selected[9] = 1
     if (previousIndex == 10 && currentIndex < 9) this.selected[9] = 0
-
   }
 
-  // colorize outTemp class span
-  public temp_colorize(temp) {
-    if ( temp <= 0 ) {
-        var color = "#1278c8";
-    } else if ( temp <= -3.8 ) {
-      color = "#30bfef";
-    } else if ( temp <= 0 ) {
-      color = "#1fafdd";
-    } else if ( temp <= 4.4 ) {
-      color = "rgba(0,172,223,1)";
-    } else if ( temp <= 10 ) {
-      color = "#71bc3c";
-    } else if ( temp <= 12.7 ) {
-      color = "rgba(90,179,41,0.8)";
-    } else if ( temp <= 18.3 ) {
-      color = "rgba(131,173,45,1)";
-    } else if ( temp <= 21.1 ) {
-      color = "rgba(206,184,98,1)";
-    } else if ( temp <= 23.8 ) {
-      color = "rgba(255,174,0,0.9)";
-    } else if ( temp <= 26.6 ) {
-      color = "rgba(255,153,0,0.9)";
-    } else if ( temp <= 29.4 ) {
-      color = "rgba(255,127,0,1)";
-    } else if ( temp <= 32.2 ) {
-      color = "rgba(255,79,0,0.9)";
-    } else if ( temp <= 35 ) {
-      color = "rgba(255,69,69,1)";
-    } else if ( temp <= 43.3 ) {
-      color = "rgba(255,104,104,1)";
-    } else if ( temp >= 43.4 ) {
-      color = "rgba(218,113,113,1)";
+    // colorize outTemp class span
+    public temp_colorize(temp) {
+      if ( temp <= 0 ) {
+          var color = "#1278c8";
+      } else if ( temp <= -3.8 ) {
+        color = "#30bfef";
+      } else if ( temp <= 0 ) {
+        color = "#1fafdd";
+      } else if ( temp <= 4.4 ) {
+        color = "rgba(0,172,223,1)";
+      } else if ( temp <= 10 ) {
+        color = "#71bc3c";
+      } else if ( temp <= 12.7 ) {
+        color = "rgba(90,179,41,0.8)";
+      } else if ( temp <= 18.3 ) {
+        color = "rgba(131,173,45,1)";
+      } else if ( temp <= 21.1 ) {
+        color = "rgba(206,184,98,1)";
+      } else if ( temp <= 23.8 ) {
+        color = "rgba(255,174,0,0.9)";
+      } else if ( temp <= 26.6 ) {
+        color = "rgba(255,153,0,0.9)";
+      } else if ( temp <= 29.4 ) {
+        color = "rgba(255,127,0,1)";
+      } else if ( temp <= 32.2 ) {
+        color = "rgba(255,79,0,0.9)";
+      } else if ( temp <= 35 ) {
+        color = "rgba(255,69,69,1)";
+      } else if ( temp <= 43.3 ) {
+        color = "rgba(255,104,104,1)";
+      } else if ( temp >= 43.4 ) {
+        color = "rgba(218,113,113,1)";
+      }
+      //console.log(color)
+      return color;
     }
-    //console.log(color)
-    return color;
-  }
-
 
   ionViewDidLoad() {
  
     let loader = this.loadingCtrl.create({
       content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+      duration: 20000,
       cssClass: 'custom-loader-class'
     });
-
     loader.present()
-
-    setTimeout(() => {
-      loader.dismiss();
-    }, 20000);
 
     this.apiProvider.getForecast().subscribe(data => { 
       this.weather = data 
@@ -123,7 +112,9 @@ export class ForecastPage {
         this.day.push(this.weather['date'][i]['short']);
         this.symbol.push('<img class="Ficon" src="assets/imgs/yr/' + this.weather['date'][i]['symbol'] + '.png">')
       }
-      loader.dismiss()     
+      setTimeout(() => {
+        loader.dismiss();
+      }, 500);
     });
     console.log('ionViewDidLoad ForecastPage');
   }

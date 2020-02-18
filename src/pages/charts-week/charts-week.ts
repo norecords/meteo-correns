@@ -23,19 +23,15 @@ export class ChartsWeekPage {
   longTitle : string;
   shortTitle : string;
   weather = [];
-  lastDateTime: number;
+  lastDateTime: any = [];
 
   ionViewDidLoad() {
 
     let loader = this.loadingCtrl.create({
-        content: '<h2>Chargement des données</h2>Téléchargement en cours...'
-      });
-  
+        content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+        duration: 20000
+      });  
       loader.present()
-  
-      setTimeout(() => {
-        loader.dismiss();
-      }, 20000);
 
       this.apiProvider.getJsonWeekCharts().subscribe(data => { 
         this.weather = data;
@@ -109,8 +105,9 @@ export class ChartsWeekPage {
               [this.weather['barometre']['series']['barometer']['data'][i]['0'], this.weather['barometre']['series']['barometer']['data'][i]['1']]
             );
           }
-
-          loader.dismiss()
+          setTimeout(() => {
+            loader.dismiss();
+          }, 500);
           }
           this.data = this.showHighchart(outTemp,dewpoint,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,this.shortTitle,this.longTitle)
   

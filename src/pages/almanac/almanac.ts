@@ -19,21 +19,18 @@ export class AlmanacPage {
   sun = [];
   moon = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private apiProvider: ApiProvider) {
-
-  }
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public loadingCtrl: LoadingController,
+              private apiProvider: ApiProvider) {}
 
   ionViewDidLoad() {
 
     let loader = this.loadingCtrl.create({
-      content: '<h2>Chargement des données</h2>Téléchargement en cours...'
+      content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+      duration : 20000
     });
-
     loader.present()
-
-    setTimeout(() => {
-      loader.dismiss();
-    }, 20000);
 
     this.apiProvider.getJsonAlmanach().subscribe(data => { 
       this.weather = data;
@@ -60,8 +57,9 @@ export class AlmanacPage {
       this.moon['newMoon'] = this.weather['moon']['newMoon']
       this.moon['phase'] = this.weather['moon']['phase']
       this.moon['fullness'] = this.weather['moon']['fullness']
-      loader.dismiss()
-    }); // Loading the Data
+      setTimeout(() => {
+        loader.dismiss();
+      }, 500);    }); 
 
     console.log('ionViewDidLoad AlmanacPage');
   }

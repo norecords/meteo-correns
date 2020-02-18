@@ -27,14 +27,10 @@ export class ChartsPage {
   ionViewDidLoad() {
 
     let loader = this.loadingCtrl.create({
-        content: '<h2>Chargement des données</h2>Téléchargement en cours...'
+        content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+        duration: 20000
       });
-  
       loader.present()
-  
-      setTimeout(() => {
-        loader.dismiss();
-      }, 20000);
 
       this.apiProvider.getJsonDayCharts().subscribe(data => { 
         this.weather = data;
@@ -112,7 +108,9 @@ export class ChartsPage {
               [this.weather['rayonnement_solaire_et_uv']['series']['UV']['data'][i]['0'], this.weather['rayonnement_solaire_et_uv']['series']['UV']['data'][i]['1']]
             );
           }
-          loader.dismiss()
+          setTimeout(() => {
+            loader.dismiss();
+          }, 500);
           }
           this.data = this.showHighchart(outTemp,dewpoint,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,UV,this.shortTitle,this.longTitle)
   

@@ -15,3 +15,12 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 @import "./show-hide-screen-size";
+
+ion-menu {
+.toolbar-background {
+  background-color: transparent !important;
+}
+.toolbar-title {
+  color: gray;
+}
+}
