@@ -186,7 +186,7 @@ private rotateThis(newRotation) {
         this.live['windSpeed_kph'] = this.weather['current']['windSpeed'];
         this.live['windCompass'] = this.weather['current']['windCompass'];
         this.live['windDir'] = this.weather['current']['windDir'];
-        this.live['windArrow'] =  "rotate(" + this.weather['current']['winddir_formatted'] + 'deg)';
+        this.live['windArrow'] =  "rotate(" + this.rotateThis(this.weather['current']['winddir_formatted']) + 'deg)';
         this.live['windGust_kph']  = this.weather['current']['windGust'];
         this.live['barometer_mbar'] = this.weather['current']['barometer'];
         this.live['dewpoint_C'] = this.weather['current']['dewpoint'];
