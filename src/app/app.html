@@ -1,4 +1,3 @@
-
 <ion-menu [content]="content">
   <ion-header>
     <ion-toolbar [ngStyle]="header['backgd']">
@@ -8,29 +7,39 @@
   <ion-content [ngStyle]="header['backgd']">
     <ion-list>
       <button menuClose ion-item (click)="openPage('HomePage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        <fa-icon [icon]="iconLive" pull="left" size="lg"></fa-icon>
         Direct
       </button>
       <button menuClose ion-item (click)="openPage('ChartsPage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        <fa-icon [icon]="iconChart" pull="left" size="lg"></fa-icon>
         Graphiques
       </button>
       <button menuClose ion-item (click)="openPage('ForecastPage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        <fa-icon [icon]="iconForecast" pull="left" size="lg"></fa-icon>
         Prévisions
       </button>
       <button menuClose ion-item (click)="openPage('AlmanacPage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        <fa-icon [icon]="iconAlmanac" pull="left" size="lg"></fa-icon>
         Almanach
       </button>
       <button menuClose ion-item (click)="openPage('AboutPage')" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+        <fa-icon [icon]="iconAbout" pull="left" size="lg"></fa-icon>
         À propos
       </button>
       <ion-item [style.background-color]="'transparent'" [ngStyle]="header['button']">
         <ion-toggle color="light" (ionChange)="toggleAppTheme()"></ion-toggle>
-        <ion-label>Mode sombre</ion-label>
-          </ion-item>
+        <ion-label>
+          <fa-icon [icon]="iconDarkmode" pull="left" size="lg" rotate="180"></fa-icon>
+          Mode sombre
+        </ion-label>
+        </ion-item>
+        <button menuClose ion-item (click)="exitApp()" [style.background-color]="'transparent'" [ngStyle]="header['button']"> <!-- LAZY LOADING: LOAD PAGE AS STRING -->
+          <fa-icon [icon]="iconExit" pull="left" size="lg"></fa-icon>
+          Quitter
+        </button>
     </ion-list>
   </ion-content>
 </ion-menu>
-
-
 
 <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
 <ion-nav [root]="rootPage" [class]="selectedTheme" #content swipeBackEnabled="false"></ion-nav>

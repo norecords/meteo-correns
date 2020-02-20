@@ -5,6 +5,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Network } from '@ionic-native/network';
 import {SettingsProvider} from "../providers/settings/settings";
 import * as HighStock from 'highcharts/highstock';
+import { faCompass, faChartLine, faSun, faMeteor, faLifeRing, faAdjust, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+
 
 HighStock.setOptions({
   lang: {
@@ -33,6 +35,13 @@ HighStock.setOptions({
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   selectedTheme: String;
+  iconLive = faCompass;
+  iconChart = faChartLine;
+  iconForecast = faSun;
+  iconAlmanac = faMeteor;
+  iconAbout = faLifeRing;
+  iconDarkmode = faAdjust;
+  iconExit = faSignOutAlt;
 
   rootPage: any = 'HomePage'; //#### LAZY LOADING: LOAD ALL PAGES AS STRING ####
   header = []
@@ -69,6 +78,10 @@ export class MyApp {
       this.header['button'] = { 'background-color': 'transparent' };
       this.header['backgd'] = { 'background-color': '#FFFFFF' };
     }
+  }
+
+  exitApp() {
+    navigator['app'].exitApp()
   }
 
 }

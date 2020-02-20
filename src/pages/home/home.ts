@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, LoadingController, NavController, NavParams, ToastController, Toast } from 'ionic-angular';
+import { IonicPage, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
 import { ApiProvider } from '../../providers/api/api';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import 'moment/locale/fr';
 import { Network } from '@ionic-native/network';
+//import { faComment } from '@fortawesome/free-solid-svg-icons';
 
 @IonicPage()
 @Component({
@@ -21,14 +22,16 @@ export class HomePage {
   loading: string; // loader
   dateTime : any; // use to convert unix epoch to date
   networkStatus : boolean;
+  //faCoffee = faComment;
+  public toastMsgs: any = [];
 
- private toastInstance: Toast;
+// private toastInstance: Toast;
   private subs : Subscription;   // MQTT sub
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public loadingCtrl: LoadingController,
-              public tost : ToastController,
+              public toastCtrl : ToastController,
               public network : Network, 
               private apiProvider: ApiProvider,
               private mqttService: MqttService) {
@@ -43,9 +46,6 @@ export class HomePage {
       console.log('network connected')
     });
 
-    this.live['showOffline'] = true;
-    this.live['showOnline'] = false;
-
     if (navigator.onLine) {
       console.log('Internet is connected');
       this.networkStatus = true;
@@ -58,11 +58,12 @@ export class HomePage {
     this.mqttService.onConnect.subscribe((e) => {
       console.log('MQTT onConnect', e);
       if(e['cmd'] == 'connack') {
-        this.presentToast('Connecté au serveur live.', 5000)
         this.live['showOffline'] = false;
         this.live['showOnline'] = false;
+        this.presentToast('Vous êtes connecté au serveur live.', 8000)
       }
     });
+
     this.mqttService.onError.subscribe((e) => {
         console.log('MQTT Erreur de connection...')
         console.log('MQTT onError', e);
@@ -70,32 +71,34 @@ export class HomePage {
         this.live['showOffline'] = true;
         this.live['showOnline'] = false;
     });
+
     this.mqttService.onClose.subscribe(() => {
         console.log('MQTT Connection fermée.')
         this.live['showOffline'] = true;
         this.live['showOnline'] = false;
     });
+
     this.mqttService.onReconnect.subscribe(() => {
         this.live['showOffline'] = false;
         this.live['showOnline'] = false;
     });
-
   }
 
-  private presentToast(mes,duration) {
-    if(this.toastInstance) {
-      return;
+  async presentToast(mes,duration) {
+    this.toastMsgs.push(mes);
+    //console.log(this.toastMsgs.length)
+    if (this.toastMsgs.length < 2 ) {
+      const toast = await this.toastCtrl.create({
+          message: this.toastMsgs['0'].toString(),
+          position: 'bottom',
+          duration: duration
+      });
+      toast.present();
+    } else if (this.toastMsgs.length > 5) {
+      this.toastMsgs.length = 0;
     }
-    this.toastInstance = this.tost.create({
-      message: mes,
-      duration: duration,
-      position: 'bottom'
-    });
-    this.toastInstance.onDidDismiss(() => {
-      this.toastInstance = null;
-    });
-    this.toastInstance.present();
-  }
+}
+
 
   // Transform mqtt value windDir degree in cardinal point
   private wind_cardinals(deg) {
@@ -168,6 +171,25 @@ private rotateThis(newRotation) {
     return color;
   }
 
+  private checkSummariesIcon(state) {
+    let check;
+    if (state === 'clear-day') check = '<img src="assets/imgs/yr/01d.png">';
+    else if (state === 'clear-night') check = '<img src="assets/imgs/yr/01n.png">';
+    else if (state === 'cloudy') check = '<img src="assets/imgs/yr/04.png">';
+    else if (state === 'fog') check = '<img src="assets/imgs/yr/15.png">';
+    else if (state === 'hail') check = '<img src="assets/imgs/yr/22.png">';
+    else if (state === 'partly-cloudy-day') check = '<img src="assets/imgs/yr/03d.png">';
+    else if (state === 'partly-cloudy-night') check = '<img src="assets/imgs/yr/03n.png">';
+    else if (state === 'rain') check = '<img src="assets/imgs/yr/09.png">';
+    else if (state === 'sleet') check = '<img src="assets/imgs/yr/12.png">';
+    else if (state === 'snow') check = '<img src="assets/imgs/yr/13.png">';
+    else if (state === 'thunderstorm') check = '<img src="assets/imgs/yr/22.png">';
+    else if (state === 'tornado') check = '<img src="assets/imgs/yr/11.png">';
+    else if (state === 'wind') check = '<img src="assets/imgs/yr/wind.png">';
+
+    return check;
+  }
+
   // load main Json
   private loadJson() {
     let loader = this.loadingCtrl.create({
@@ -191,14 +213,15 @@ private rotateThis(newRotation) {
         this.live['barometer_mbar'] = this.weather['current']['barometer'];
         this.live['dewpoint_C'] = this.weather['current']['dewpoint'];
         this.live['outHumidity'] = this.weather['current']['outHumidity'];
-        this.live['dayRain_cm'] = this.weather['current']['rain'];
+        //this.live['dayRain_cm'] = this.weather['current']['rain'];
+        this.live['dayRain_cm'] = this.weather['day']['rainSum'];
         this.live['rainRate_cm_per_hour'] = this.weather['current']['rainRate'];
         this.live['UV'] = this.weather['current']['uv'];
         this.live['cloudbase'] = this.weather['current']['cloudbase'];
         this.summaries['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
         this.summaries['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
         this.summaries['visibility'] = this.weather['current']['visibility'];
-        this.summaries['icon'] = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
+        this.summaries['icon'] = this.checkSummariesIcon(this.weather['current']['icon']);
         this.summaries['currentText'] = this.weather['current']['summary'];
         this.summaries['dayOutTempMax'] = this.weather['day']['outTempMax'];
         this.summaries['dayOutTempMin'] = this.weather['day']['outTempMin'];
@@ -216,7 +239,7 @@ private rotateThis(newRotation) {
       if (this.weather['current']['datetime_raw'] =! null) {
         setTimeout(() => {
           loader.dismiss();
-        }, 500);
+        }, 1000);
       }
     });   
   }
@@ -229,7 +252,7 @@ private rotateThis(newRotation) {
           this.dateTime = this.weather['current']['datetime_raw'];
           this.summaries['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
           this.summaries['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
-          this.summaries['symbol'] = '<img src="assets/imgs/darksky/' + this.weather['current']['icon'] + '.png">';
+          this.summaries['icon'] = this.checkSummariesIcon(this.weather['current']['icon']);
           this.summaries['currentText'] = this.weather['current']['summary'];
           this.summaries['visibility'] = this.weather['current']['visibility'];
           this.summaries['dayOutTempMax'] = this.weather['day']['outTempMax'];
@@ -325,8 +348,10 @@ private rotateThis(newRotation) {
   }
   ionViewWillLeave() {
       // Mqtt Unsubscribe
-      if (this.dateTime != null) {
+      if (this.loop['dateTime'] != null) {
       this.subs.unsubscribe();
+      this.live['showOffline'] = false;
+      this.live['showOnline'] = false;
       console.log('MQTT unsubscribed');
       }
   }

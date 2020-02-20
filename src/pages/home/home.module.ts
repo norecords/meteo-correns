@@ -4,13 +4,15 @@ import { HomePage } from './home';
 // API:
 import { ApiProvider } from '../../providers/api/api' // Import our provider
 import { HttpModule } from '@angular/http'; // Import HttpModule
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
     HomePage,
   ],
   imports: [
-    HttpModule, // Import HttpModule
+    HttpModule, // Import HttpModule,
+    FontAwesomeModule,
     IonicPageModule.forChild(HomePage),
   ],
   providers: [

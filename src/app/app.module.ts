@@ -9,6 +9,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { MqttModule, MqttService , IMqttServiceOptions} from 'ngx-mqtt';
 import { SettingsProvider } from '../providers/settings/settings';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
   hostname: 'iot.correns.org',
@@ -28,6 +29,7 @@ export function mqttServiceFactory() {
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    FontAwesomeModule,
     MqttModule.forRoot({
       provide: MqttService,
       useFactory: mqttServiceFactory
