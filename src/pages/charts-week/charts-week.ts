@@ -119,24 +119,32 @@ export class ChartsWeekPage {
 
     HighStock.chart('chartsWeek', {
         chart: {
-                height: 1350,
+                height: 1450,
                 styledMode: true,
+                marginLeft: 45,
+                marginRight: 45
             },
         
             rangeSelector: {
               enabled: true,
+              verticalAlign: 'top',
+              buttonPosition: {
+                align: 'right'
+              },
+              x:-40,
+              y:5,
               buttons: [{
                 type: 'hour',
-                count: 1,
-                text: '1h'
+                count: 24,
+                text: '1j'
             }, {
                 type: 'hour',
-                count: 2,
-                text: '2h'
+                count: 48,
+                text: '2j'
             }, {
                 type: 'hour',
-                count: 6,
-                text: '6h'
+                count: 72,
+                text: '3j'
             },{
                 type: 'all',
                 text: 'Tout'
@@ -170,34 +178,22 @@ export class ChartsWeekPage {
         },
         
             yAxis: [{
-                labels: { // temp
-                    align: 'right',
-                    x: -3
-                },
+              // temp
                 title: {
                     text: 'Température',
+                    rotation: 0,
+                    x:75,
+                    y:-142
                 },
-                height: '250px',
-                lineWidth: 2
-              }, /*{ // windDir
-                opposite: true,
-                labels: {
-                    align: 'right',
-                    x: 8
-                },
-                title: {
-                    text: 'Direction'
-                },
-                top: '25%',
                 height: '250px',
                 offset: 0,
-            },*/ { // windspeed
-              labels: {
-                  align: 'right',
-                  x: 8
-              },
+                lineWidth: 2
+              },{ // windspeed
               title: {
-                  text: 'Vent'
+                  text: 'Vent',
+                  rotation: 0,
+                  x:40,
+                  y:-150
               },
               top: '25%',
               height: '250px',
@@ -205,25 +201,33 @@ export class ChartsWeekPage {
               lineWidth: 2
         
           }, { // rain
-            labels: {
-                align: 'right',
-                x: 8
-            },
             title: {
-                text: 'Pluie'
+                text: 'Pluie',
+                rotation: 0,
+                x:36,
+                y:-150
             },
             top: '50%',
             height: '250px',
             offset: 0,
             lineWidth: 2
         
-        }, { // barometer
-          labels: {
-              align: 'right',
-              x: 8
-          },
+        },{
+          // rainRate
           title: {
-              text: 'Baromètre'
+              text: null,
+          },
+          top: '50%',
+          height: '250px',
+          offset: 0,
+          opposite: true,
+          lineWidth: 2
+        },{ // barometer
+          title: {
+              text: 'Baromètre',
+              rotation: 0,
+              x:85,
+              y:-150
           },
           top: '75%',
           height: '250px',
@@ -296,16 +300,7 @@ export class ChartsWeekPage {
                  data: dewpoint,
                  type: 'line',
                  yAxis: 0
-                },/*{
-                  name: 'Direction',
-                   data: windDir,
-                   type: 'line',
-                   lineWidth: 0,
-                   yAxis: 1,
-                   marker: {
-                    enabled: true
-                   }
-               },*/{
+                },{
                 name: 'Rafale',
                  data: windGust,
                  type: 'areaspline',
@@ -336,7 +331,7 @@ export class ChartsWeekPage {
           name: 'Total',
            data: rainTotal,
            type: 'line',
-           yAxis: 2,
+           yAxis: 3,
            tooltip: {
                valueDecimals: 1,
          valueSuffix: ' mm'
@@ -345,7 +340,7 @@ export class ChartsWeekPage {
         name: 'Pression',
          data: barometer,
          type: 'line',
-         yAxis: 3,
+         yAxis: 4,
          tooltip: {
              valueDecimals: 1,
         valueSuffix: ' hPa'
@@ -359,7 +354,7 @@ export class ChartsWeekPage {
                     },
                     chartOptions: {
                         chart: {
-                            height: 1600
+                            height: 1450
                         }, 
                         title: {
                             text : shortTitle

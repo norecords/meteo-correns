@@ -121,12 +121,21 @@ export class ChartsPage {
   
       HighStock.chart('chartsDay', {
   chart: {
-          height: 1350,
+          height: 1450,
           styledMode: true,
+          marginLeft: 45,
+          marginRight: 45
+
       },
-  
+
       rangeSelector: {
         enabled: true,
+        verticalAlign: 'top',
+        buttonPosition: {
+          align: 'right'
+        },
+        x:-40,
+        y:5,
         buttons: [{
           type: 'hour',
           count: 1,
@@ -148,9 +157,8 @@ export class ChartsPage {
       },
       selected: 3,
       inputEnabled: false
-       
     },
-  
+
   legend: {
       enabled: true,
       borderColor: 'grey',
@@ -167,75 +175,66 @@ export class ChartsPage {
   
   xAxis: {
       type: 'datetime',
-      crosshair: true,
-  
+      crosshair: true
   },
   
       yAxis: [{
-          labels: { // temp
-              align: 'right',
-              x: -3
-          },
           title: {
               text: 'Température',
+              rotation: 0,
+              x:75,
+              y:-142
           },
-          height: '250px',
-          lineWidth: 2
-        },{
-          labels: { // UV
-              align: 'center'
-          },
-          title: {
-              text: 'UV',
-          },
-          height: '250px',
-          opposite: true,
-          lineWidth: 2
-        }, /*{ // windDir
-          opposite: true,
-          labels: {
-              align: 'right',
-              x: 8
-          },
-          title: {
-              text: 'Direction'
-          },
-          top: '25%',
           height: '250px',
           offset: 0,
-      },*/ { // windspeed
-        labels: {
-            align: 'right',
-            x: 8
-        },
+          lineWidth: 2
+        },{ // UV
+          title: {
+              text: null
+          },
+          height: '250px',
+          opposite: true,
+          offset: 0,
+          lineWidth: 2
+        },{ // windspeed
         title: {
-            text: 'Vent'
+            text: 'Vent',
+            rotation: 0,
+            x:30,
+            y:-150
         },
         top: '25%',
         height: '250px',
         offset: 0,
         lineWidth: 2
   
-    }, { // rain
-      labels: {
-          align: 'right',
-          x: 8
-      },
+    },{ // rain
       title: {
-          text: 'Pluie'
+          text: 'Pluie',
+          rotation: 0,
+          x:26,
+          y:-150
       },
       top: '50%',
       height: '250px',
       offset: 0,
       lineWidth: 2
   
-  }, { // barometer
-    labels: {
-        align: 'right',
-        x: 8
-    },
+  },{ // RainRate
     title: {
-        text: 'Baromètre'
+        text: null,
+    },
+    top: '50%',
+    height: '250px',
+    opposite: true,
+    offset: 0,
+    lineWidth: 2
+  }, { // barometer
+    title: {
+        text: 'Baromètre',
+        rotation: 0,
+        x:75,
+        y:-150
     },
     top: '75%',
     height: '250px',
@@ -314,17 +313,12 @@ export class ChartsPage {
              type: 'line',
              lineWidth: 1,
              yAxis: 1,
+             tooltip: {
+              valueDecimals: 1,
+        valueSuffix: ''
+          }
 
-         },/*{
-            name: 'Direction',
-             data: windDir,
-             type: 'line',
-             lineWidth: 0,
-             yAxis: 1,
-             marker: {
-              enabled: true
-             }
-         },*/{
+         },{
           name: 'Rafale',
            data: windGust,
            type: 'areaspline',
@@ -355,7 +349,7 @@ export class ChartsPage {
     name: 'Total',
      data: rainTotal,
      type: 'line',
-     yAxis: 3,
+     yAxis: 4,
      tooltip: {
          valueDecimals: 1,
    valueSuffix: ' mm'
@@ -364,7 +358,7 @@ export class ChartsPage {
   name: 'Pression',
    data: barometer,
    type: 'line',
-   yAxis: 4,
+   yAxis: 5,
    tooltip: {
        valueDecimals: 1,
   valueSuffix: ' hPa'
@@ -378,7 +372,7 @@ export class ChartsPage {
               },
               chartOptions: {
                   chart: {
-                      height: 1600
+                      height: 1450
                   }, 
                   title: {
                       text : shortTitle

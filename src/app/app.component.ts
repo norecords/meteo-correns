@@ -7,7 +7,6 @@ import {SettingsProvider} from "../providers/settings/settings";
 import * as HighStock from 'highcharts/highstock';
 import { faCompass, faChartLine, faSun, faMeteor, faLifeRing, faAdjust, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
-
 HighStock.setOptions({
   lang: {
     months: [
@@ -22,7 +21,8 @@ HighStock.setOptions({
     shortMonths : [
       "Jan", "Fev", "Mar", "Avr", "Mai", "Juin", "Juil", "Août",
        "Sep", "Oct", "Nov", "Dec"
-      ]
+      ],
+      rangeSelectorZoom: ''
   },
   time: {
     useUTC: false
@@ -46,7 +46,12 @@ export class MyApp {
   rootPage: any = 'HomePage'; //#### LAZY LOADING: LOAD ALL PAGES AS STRING ####
   header = []
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public events: Events, public network: Network, private settings: SettingsProvider,) {
+  constructor(public platform: Platform,
+              public statusBar: StatusBar,
+              public splashScreen: SplashScreen,
+              public events: Events,
+              public network: Network,
+              private settings: SettingsProvider) {
     this.initializeApp();
     this.settings.getActiveTheme().subscribe(val => this.selectedTheme = val);
   }
