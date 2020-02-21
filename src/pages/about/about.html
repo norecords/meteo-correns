@@ -12,11 +12,19 @@
   
   <ion-card>
     <ion-card-content>
-      <p>Cette application est automatiquement mise à jour en temps réel (toutes les 20 secondes) avec les observations météo de la station météorologique personnelle BYOWS ( Build Your Own Weather Station) de la fondation Raspberry Pi.
-<br>Nous sommes situés à Correns (83570) dans le Var en France.</p>
-
-<p>Les données météorologiques sont reçues par un Raspberry pi par le biais d'un broker (MQTT - Mosquitto), et traitées par le logiciel météo weewx pour les archives et pour l'alimentation du site Web.
-<br>La station météo fournit les lectures suivantes:</p>
+      <h1>Comment ?</h1>
+      <p>Cette application est automatiquement mise à jour en temps réel (toutes les 20 secondes) 
+        avec les observations météo de la station météorologique personnelle BYOWS 
+        ( Build Your Own Weather Station) de la fondation Raspberry Pi.
+      </p>
+      <p>Les données météorologiques sont reçues par un Raspberry pi par le biais d'un broker 
+        (MQTT - Mosquitto), et traitées par le logiciel météo weewx pour les archives et pour l'alimentation 
+        du site Web.
+      </p>
+  <h1>Où ?</h1>
+  <p>Nous sommes situés dans le quartier l'Enville à Correns (83570) dans le Var en France.</p>
+  <h1>Quoi ?</h1>
+<p>La station météo fournit les lectures suivantes:</p>
 <ul>
     <li>Température</li>
     <li>Humidité</li>
@@ -26,19 +34,30 @@
     <li>UV</li>
     <li>Pression barométrique</li>
 </ul>
+<h1>Par quel moyen ?</h1>
+Weewx<br>
+Raspberry pi<br>
+Mqtt (mosquitto - ngx-mqtt)<br>
+yr.no (forecast - weather symbols)<br>
+Ionic<br>
+Angular<br>
+Belchertown Fork<br>
+HighCharts<br>
+Weather Icons<br>
+Awesome Font<br>
+
+<h1>Version</h1>
 <ul>
     <li>Server uptime: {{weather.serveruptime}}</li>
     <li>WeeWX uptime: {{weather.weewxuptime}}</li>
     <li>WeeWX version: {{weather.weewxversion}}</li>
-    <li>Météo Correns app: {{weather.appversion}}</li>
+    <li>Météo Correns app: v.0.9.6 - OpenBeta</li>
     <li>Ionic Framework: {{weather.ionicframeworkversion}}</li>
-    <li>Prévisions météo par Darksky</li>
-    <li>Carte radar par Windy</li>
 </ul>
-  <h1><a href="https://github.com/norecords/meteo-correns"><ion-icon name="logo-github"></ion-icon></a> 
-  <a href="https://meteo.correns.org/blog"><ion-icon name="logo-wordpress"></ion-icon></a></h1>
+<h1>Liens</h1>
+  <h1><a href="https://github.com/norecords/meteo-correns"><ion-icon name="logo-github"></ion-icon></a></h1>
+  <h1><a href="https://meteo.correns.org/blog"><ion-icon name="logo-wordpress"></ion-icon></a></h1>
     </ion-card-content>
   </ion-card>
-
 </ion-content>
 
