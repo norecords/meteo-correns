@@ -27,7 +27,7 @@
         À propos
       </button>
       <ion-item [style.background-color]="'transparent'" [ngStyle]="header['button']">
-        <ion-toggle color="light" (ionChange)="toggleAppTheme()"></ion-toggle>
+        <ion-toggle [(ngModel)]="isToggled" color="light" (ionChange)="toggleAppTheme()"></ion-toggle>
         <ion-label>
           <fa-icon [icon]="iconDarkmode" pull="left" size="lg" rotate="180"></fa-icon>
           Mode sombre

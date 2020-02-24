@@ -67,6 +67,13 @@ export class ApiProvider {
     .catch(this.catchError)
   }
 
+  getJsonSunrise(){
+    return this.http.get('https://meteo.correns.org/api/app.php?q=sunrise')
+    .map(this.extractData)
+    .do(this.logResponse)
+    .catch(this.catchError)
+  }
+
   private catchError(error: Response | any) {
 	  console.log(error);
 	  return Observable.throw(error.json().error || "Server error!");

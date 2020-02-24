@@ -9,6 +9,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { MqttModule, MqttService , IMqttServiceOptions} from 'ngx-mqtt';
 import { SettingsProvider } from '../providers/settings/settings';
+import { ApiProvider } from '../providers/api/api';
+import { HttpModule } from '@angular/http'; // Import HttpModule
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
@@ -30,6 +32,7 @@ export function mqttServiceFactory() {
     BrowserModule,
     IonicModule.forRoot(MyApp),
     FontAwesomeModule,
+    HttpModule,
     MqttModule.forRoot({
       provide: MqttService,
       useFactory: mqttServiceFactory
@@ -44,7 +47,8 @@ export function mqttServiceFactory() {
     Network,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    SettingsProvider
+    SettingsProvider,
+    ApiProvider
   ]
 })
 export class AppModule {}
