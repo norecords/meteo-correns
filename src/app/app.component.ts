@@ -37,10 +37,12 @@ HighStock.setOptions({
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  almanac = [];
-  current: string;
+  current: string = 'day';
   selectedTheme: String;
   selectedMode: String;
+  weather = []; // json array
+  header = [];
+  public isToggled: boolean = false;
   iconLive = faCompass;
   iconChart = faChartLine;
   iconForecast = faSun;
@@ -48,9 +50,6 @@ export class MyApp {
   iconAbout = faLifeRing;
   iconDarkmode = faAdjust;
   iconExit = faSignOutAlt;
-  weather = []; // json array
-  header = []
-  public isToggled: boolean;
 
   rootPage: any = 'HomePage'; //#### LAZY LOADING: LOAD ALL PAGES AS STRING ####
 
@@ -64,13 +63,16 @@ export class MyApp {
     this.initializeApp();
     this.settings.getActiveTheme().subscribe(val => this.selectedTheme = val);
     this.settings.getActiveMode().subscribe(val => this.selectedMode = val);
-    this.isToggled = false;
   }
-
+  // Check if it's night or day and automaticly change the theme on each view init
   ngAfterViewInit() {
     this.nav.viewDidEnter.subscribe((data) => {
       if (this.selectedMode === 'auto') {
         this.checkSunrise();
+        setInterval(() => {
+          this.checkSunrise();
+          console.log('check Sunrise')
+        }, 1000 * 60 * 10); // 10 minutes
         console.log('check Sunrise')
       }
     });
@@ -99,24 +101,20 @@ checkSunrise() {
   console.log(currDate)
   this.apiProvider.getJsonSunrise().subscribe(data => { 
     this.weather = data;
-    //this.almanac['datetime'] = moment.unix(this.weather['current']['datetime_raw']).format('HH');
-    this.almanac['sunrise'] = this.weather['almanac']['sunrise_hour'];
-    this.almanac['sunset'] = this.weather['almanac']['sunset_hour'];
-  
-      if (currDate >= this.almanac['sunrise']
-       && currDate < this.almanac['sunset']) { 
-         this.current = 'day';
+      // if between sunrise and sunset
+      if (currDate >= this.weather['srh'] // Sunrise hour
+       && currDate < this.weather['ssth']) { // Sunset hour
+        this.current = 'day'; // set daylight
         if (this.selectedTheme === 'dark-theme') {
-          this.autoTheme()
-          this.current = 'day' 
+          this.autoTheme();
         }
-      } else {
+      } else { // this is night time
+        this.current = 'night';
         if (this.selectedTheme === 'light-theme') {
-          this.autoTheme()
-          this.current = 'night'
+          this.autoTheme();
         }
       }
-      console.log(this.current + currDate + this.almanac['sunrise'] + this.almanac['sunset'])
+      console.log(this.current + currDate + this.weather['srh'] + this.weather['ssth']);
     });
 }
 
@@ -128,6 +126,7 @@ autoTheme() {
     this.header['backgd'] = { 'background-color': '#333333' };
   } else {
     this.settings.setActiveTheme('light-theme');
+    this.isToggled = false;
     this.header['button'] = { 'background-color': 'transparent' };
     this.header['backgd'] = { 'background-color': '#FFFFFF' };
   }
@@ -143,7 +142,6 @@ autoTheme() {
       }
       this.header['button'] = { 'background-color': 'transparent', 'color': 'white' };
       this.header['backgd'] = { 'background-color': '#333333' };
-      console.log(this.selectedMode)
     } else {
       this.settings.setActiveTheme('light-theme');
       if (this.current === 'night') {
@@ -153,13 +151,12 @@ autoTheme() {
       }
       this.header['button'] = { 'background-color': 'transparent' };
       this.header['backgd'] = { 'background-color': '#FFFFFF' };
-      console.log(this.selectedMode)
     }
-
+    console.log(this.selectedMode)
   }
 
   exitApp() {
-    navigator['app'].exitApp()
+    navigator['app'].exitApp();
   }
 
 }

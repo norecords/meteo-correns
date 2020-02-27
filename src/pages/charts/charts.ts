@@ -182,7 +182,8 @@ export class ChartsPage {
           title: {
               text: 'Température',
               rotation: 0,
-              x:75,
+              textAlign: 'left',
+              x:10,
               y:-142
           },
           height: '250px',
@@ -200,7 +201,8 @@ export class ChartsPage {
         title: {
             text: 'Vent',
             rotation: 0,
-            x:30,
+            textAlign: 'left',
+            x:12,
             y:-150
         },
         top: '25%',
@@ -212,7 +214,8 @@ export class ChartsPage {
       title: {
           text: 'Pluie',
           rotation: 0,
-          x:26,
+          textAlign: 'left',
+          //x:26,
           y:-150
       },
       top: '50%',
@@ -233,12 +236,13 @@ export class ChartsPage {
     title: {
         text: 'Baromètre',
         rotation: 0,
-        x:75,
+        textAlign: 'left',
+        x:12,
         y:-150
     },
     top: '75%',
     height: '250px',
-    offset: 0,
+    offset: -12,
     lineWidth: 2
   }],
   

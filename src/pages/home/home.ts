@@ -3,10 +3,11 @@ import { IonicPage, LoadingController, NavController, NavParams, ToastController
 import { ApiProvider } from '../../providers/api/api';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subscription } from 'rxjs/Subscription';
+import { Network } from '@ionic-native/network';
+import { SettingsProvider } from "../../providers/settings/settings";
+import { faExclamationTriangle, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import 'moment/locale/fr';
-import { Network } from '@ionic-native/network';
-//import { faComment } from '@fortawesome/free-solid-svg-icons';
 
 @IonicPage()
 @Component({
@@ -15,6 +16,7 @@ import { Network } from '@ionic-native/network';
 })
 
 export class HomePage {
+  mqttOnConnect: any;
   loop = []; // mqtt loop
   weather = []; // json array  
   live = []; // live array
@@ -22,8 +24,12 @@ export class HomePage {
   loading: string; // loader
   dateTime : any; // use to convert unix epoch to date
   networkStatus : boolean;
-  //faCoffee = faComment;
+  alerts : boolean = false;
+  showAlerts: String;
   public toastMsgs: any = [];
+  iconAlert = faExclamationTriangle;
+  iconDown = faAngleDown;
+  iconUp = faAngleUp;
 
 // private toastInstance: Toast;
   private subs : Subscription;   // MQTT sub
@@ -34,7 +40,10 @@ export class HomePage {
               public toastCtrl : ToastController,
               public network : Network, 
               private apiProvider: ApiProvider,
-              private mqttService: MqttService) {
+              private mqttService: MqttService,
+              private settings: SettingsProvider) {
+
+    this.settings.getActiveAlertsDisplay().subscribe(val => this.showAlerts = val);
 
     this.network.onDisconnect().subscribe(() => {
       console.log('network disconnected')
@@ -54,8 +63,7 @@ export class HomePage {
       this.networkStatus = false;
     }
 
-    console.log('MQTT Connection en cours...');
-    this.mqttService.onConnect.subscribe((e) => {
+    this.mqttOnConnect = this.mqttService.onConnect.subscribe((e) => {
       console.log('MQTT onConnect', e);
       if(e['cmd'] == 'connack') {
         this.live['showOffline'] = false;
@@ -99,7 +107,6 @@ export class HomePage {
     }
 }
 
-
   // Transform mqtt value windDir degree in cardinal point
   private wind_cardinals(deg) {
     var directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO','N']
@@ -112,7 +119,7 @@ export class HomePage {
 // https://stackoverflow.com/a/19872672/1177153
 private rotateThis(newRotation) {
   if ( newRotation == "N/A") { return; }
-  var currentRotation;
+  let currentRotation;
   var finalRotation = finalRotation || 0; // if finalRotation undefined or 0, make 0, else finalRotation
   currentRotation = finalRotation % 360;
   if ( currentRotation < 0 ) { currentRotation += 360; }
@@ -123,50 +130,34 @@ private rotateThis(newRotation) {
 
   // Replace unit . by ,
   private replace_point(str) {
-    var re = '.'; 
-    var newstr = str.replace(re, ','); 
+    let newstr = str.replace('.', ','); 
     return newstr;
   }
 
   // Capitalize moment first letter
   private capitalizeFirstLetter(str) {
-    var newstr = str.substring(0, 1).toUpperCase() + str.substring(1);
+    let newstr = str.substring(0, 1).toUpperCase() + str.substring(1);
     return newstr;
   }
 
   // colorize outTemp class span
   private temp_colorize(temp) {
-    if ( temp <= 0 ) {
-        var color = "#1278c8";
-    } else if ( temp <= -3.8 ) {
-      color = "#30bfef";
-    } else if ( temp <= 0 ) {
-      color = "#1fafdd";
-    } else if ( temp <= 4.4 ) {
-      color = "rgba(0,172,223,1)";
-    } else if ( temp <= 10 ) {
-      color = "#71bc3c";
-    } else if ( temp <= 12.7 ) {
-      color = "rgba(90,179,41,0.8)";
-    } else if ( temp <= 18.3 ) {
-      color = "rgba(131,173,45,1)";
-    } else if ( temp <= 21.1 ) {
-      color = "rgba(206,184,98,1)";
-    } else if ( temp <= 23.8 ) {
-      color = "rgba(255,174,0,0.9)";
-    } else if ( temp <= 26.6 ) {
-      color = "rgba(255,153,0,0.9)";
-    } else if ( temp <= 29.4 ) {
-      color = "rgba(255,127,0,1)";
-    } else if ( temp <= 32.2 ) {
-      color = "rgba(255,79,0,0.9)";
-    } else if ( temp <= 35 ) {
-      color = "rgba(255,69,69,1)";
-    } else if ( temp <= 43.3 ) {
-      color = "rgba(255,104,104,1)";
-    } else if ( temp >= 43.4 ) {
-      color = "rgba(218,113,113,1)";
-    }
+    let color;
+    if ( temp <= 0 ) color = "#1278c8";
+    else if ( temp <= -3.8 ) color = "#30bfef";
+    else if ( temp <= 0 ) color = "#1fafdd";
+    else if ( temp <= 4.4 ) color = "rgba(0,172,223,1)";
+    else if ( temp <= 10 ) color = "#71bc3c";
+    else if ( temp <= 12.7 ) color = "rgba(90,179,41,0.8)";
+    else if ( temp <= 18.3 ) color = "rgba(131,173,45,1)";
+    else if ( temp <= 21.1 ) color = "rgba(206,184,98,1)";
+    else if ( temp <= 23.8 ) color = "rgba(255,174,0,0.9)";
+    else if ( temp <= 26.6 ) color = "rgba(255,153,0,0.9)";
+    else if ( temp <= 29.4 ) color = "rgba(255,127,0,1)";
+    else if ( temp <= 32.2 ) color = "rgba(255,79,0,0.9)";
+    else if ( temp <= 35 ) color = "rgba(255,69,69,1)";
+    else if ( temp <= 43.3 ) color = "rgba(255,104,104,1)";
+    else if ( temp >= 43.4 ) color = "rgba(218,113,113,1)";
     //console.log(color)
     return color;
   }
@@ -188,6 +179,33 @@ private rotateThis(newRotation) {
     else if (state === 'wind') check = '<img src="assets/imgs/yr/wind.png">';
 
     return check;
+  }
+
+  public alertsColorize(alert) {
+    let color;
+    if (alert.match(/jaune/i)) color = "#cfc800";
+    else if (alert.match(/orange/i)) color = "#cf8a00";
+    else if (alert.match(/rouge/i)) color = "#cf0000";
+    return color;
+  }
+
+  public momentAlerts(time,type) {
+    if (type === 'from') time = moment.unix(time).fromNow();
+    if (type === 'to') time = moment.unix(time).format('dddd Do MMMM YYYY LT');
+    return time;
+  }
+
+  public toggleAlerts() {
+    if (this.showAlerts === 'true') {
+      this.settings.setActiveAlertsDisplay('false');
+      //this.showAlerts = 'false';
+      console.log(this.showAlerts)
+    } else {
+      this.settings.setActiveAlertsDisplay('true');
+      //this.showAlerts = 'true';
+      console.log(this.showAlerts)
+    }
+    //return this.showAlerts
   }
 
   // load main Json
@@ -235,6 +253,11 @@ private rotateThis(newRotation) {
         this.summaries['monthWindMax'] = this.weather['month']['windMax'];
         this.summaries['monthRainSum'] = this.weather['month']['rainSum'];
         this.summaries['monthRainRateMax'] = this.weather['month']['rainRateMax'];
+        if (this.weather['alerts'] != null) {
+         this.alerts = true;
+          this.summaries['alerts'] = this.weather['alerts'];
+          console.log('alerts : ' + this.alerts)
+        }
       // Dismiss loader
       if (this.weather['current']['datetime_raw'] =! null) {
         setTimeout(() => {
@@ -267,6 +290,13 @@ private rotateThis(newRotation) {
           this.summaries['monthWindMax'] = this.weather['month']['windMax'];
           this.summaries['monthRainSum'] = this.weather['month']['rainSum'];
           this.summaries['monthRainRateMax'] = this.weather['month']['rainRateMax'];
+          if (this.weather['alerts'] != null) {
+            this.alerts = true;
+             this.summaries['alerts'] = this.weather['alerts'];
+             console.log('alerts : ' + this.alerts)
+           } else {
+            this.alerts = false;
+          }
           console.log('summaries and symbol updated');
         
       });
@@ -350,6 +380,7 @@ private rotateThis(newRotation) {
       // Mqtt Unsubscribe
       if (this.loop['dateTime'] != null) {
       this.subs.unsubscribe();
+      this.mqttOnConnect.unsubscribe();
       this.live['showOffline'] = false;
       this.live['showOnline'] = false;
       console.log('MQTT unsubscribed');

@@ -5,6 +5,7 @@ import { HomePage } from './home';
 import { ApiProvider } from '../../providers/api/api' // Import our provider
 import { HttpModule } from '@angular/http'; // Import HttpModule
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SettingsProvider } from "../../providers/settings/settings";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     IonicPageModule.forChild(HomePage),
   ],
   providers: [
-    ApiProvider // Import our provider
+    ApiProvider, // Import our provider
+    SettingsProvider
   ],
 })
 export class HomePageModule {}
