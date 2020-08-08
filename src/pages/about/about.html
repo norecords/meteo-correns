@@ -24,7 +24,7 @@
   <h1>Où ?</h1>
   <p>Nous sommes situés dans le quartier l'Enville à Correns (83570) dans le Var en France.</p>
   <h1>Quoi ?</h1>
-<p>La station météo fournit les lectures suivantes:</p>
+<p>La station météo fournit les lectures suivantes :</p>
 <ul>
     <li>Température</li>
     <li>Humidité</li>
@@ -34,7 +34,7 @@
     <li>UV</li>
     <li>Pression barométrique</li>
 </ul>
-<h1>Par quel moyen ?</h1>
+<h1>Logiciels et librairies</h1>
 Weewx<br>
 Raspberry pi<br>
 Mqtt (mosquitto - ngx-mqtt)<br>
@@ -47,13 +47,21 @@ Weather Icons<br>
 Awesome Font<br>
 
 <h1>Version</h1>
+<h2>Météo Correns app : v.1.0.0 </h2>
 <ul>
-    <li>Server uptime: {{weather.serveruptime}}</li>
-    <li>WeeWX uptime: {{weather.weewxuptime}}</li>
-    <li>WeeWX version: {{weather.weewxversion}}</li>
-    <li>Météo Correns app: v.0.9.6 - OpenBeta</li>
+    <li>Server uptime : {{weather.serveruptime}}</li>
+    <li>WeeWX uptime : {{weather.weewxuptime}}</li>
+    <li>WeeWX version : {{weather.weewxversion}}</li>
     <li>Ionic Framework: {{weather.ionicframeworkversion}}</li>
 </ul>
+<h2>Notes de version</h2>
+<ul>
+  <li>Passage en version publique.</li>
+  <li>Préparation migration prévisions de yr.no en format Json</li>
+  <li>Changement automatique pour le dark mode en fonction du moment de la journée.</li>
+  <li>Mise à jour de la librairie HighCharts.</li>
+</ul>
+
 <h1>Liens</h1>
   <h1><a href="https://github.com/norecords/meteo-correns"><ion-icon name="logo-github"></ion-icon></a></h1>
   <h1><a href="https://meteo.correns.org/blog"><ion-icon name="logo-wordpress"></ion-icon></a></h1>

@@ -50,6 +50,8 @@ export class MyApp {
   iconAbout = faLifeRing;
   iconDarkmode = faAdjust;
   iconExit = faSignOutAlt;
+  sunriseLoad: any;
+  forecastRecTime : number;
 
   rootPage: any = 'HomePage'; //#### LAZY LOADING: LOAD ALL PAGES AS STRING ####
 
@@ -59,34 +61,49 @@ export class MyApp {
               public events: Events,
               public network: Network,
               private settings: SettingsProvider,
-              private apiProvider: ApiProvider) {
+              private apiProvider: ApiProvider) {    
+   
     this.initializeApp();
-    this.settings.getActiveTheme().subscribe(val => this.selectedTheme = val);
-    this.settings.getActiveMode().subscribe(val => this.selectedMode = val);
-  }
-  // Check if it's night or day and automaticly change the theme on each view init
-  ngAfterViewInit() {
-    this.nav.viewDidEnter.subscribe((data) => {
-      if (this.selectedMode === 'auto') {
-        this.checkSunrise();
-        setInterval(() => {
-          this.checkSunrise();
-          console.log('check Sunrise')
-        }, 1000 * 60 * 10); // 10 minutes
-        console.log('check Sunrise')
-      }
-    });
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+      this.apiProvider.getJsonSunrise().subscribe(data => {
+        this.sunriseLoad = data;
+        this.checkSunrise();
+      });
       this.statusBar.styleDefault();
       this.statusBar.overlaysWebView(true);
       this.statusBar.backgroundColorByHexString('#2d7d9a');
       this.statusBar.show();
+      //
+      this.apiProvider.getForecast().subscribe(data => { 
+        this.settings.updateForecastData(data);
+        console.log('Forecast data are in settings')
+      });
+      //
+      this.apiProvider.getJsonAlmanach().subscribe(data => { 
+        this.settings.updateAlmanacData(data)
+        console.log('Almanac data are in settings')
+      });
+
+
+      this.settings.getActiveTheme().subscribe(val => this.selectedTheme = val);
+      this.settings.getActiveMode().subscribe(val => this.selectedMode = val);
+      this.settings.getForecastData().subscribe(data => this.forecastRecTime = data['recTime']);
+
+      // interval to check for new content
+      setInterval(() => {
+        this.checkSunrise();
+        //console.log('check Sunrise')
+        this.checkNewForecast();
+        //console.log('check new Forecast')
+      }, 1000 * 60 * 1); // 5 minutes
+
     });
+  
   }
 
   openPage(page) {
@@ -96,26 +113,24 @@ export class MyApp {
   }
 
 checkSunrise() {
-  let currDate;
-  currDate =  moment.unix(Math.round(new Date().getTime()/1000)).format('HH');
-  console.log(currDate)
-  this.apiProvider.getJsonSunrise().subscribe(data => { 
-    this.weather = data;
-      // if between sunrise and sunset
-      if (currDate >= this.weather['srh'] // Sunrise hour
-       && currDate < this.weather['ssth']) { // Sunset hour
-        this.current = 'day'; // set daylight
-        if (this.selectedTheme === 'dark-theme') {
-          this.autoTheme();
+  let currDate = moment.unix(Math.round(new Date().getTime()/1000)).format('HH');
+  //console.log(currDate)
+        // if between sunrise and sunset
+        if (currDate >= this.sunriseLoad['srh'] // Sunrise hour
+         && currDate < this.sunriseLoad['ssth']) { // Sunset hour
+          this.current = 'day'; // set daylight
+          if (this.selectedTheme === 'dark-theme') {
+            this.autoTheme();
+            console.log('its daylight turn to light theme')
+          }
+        } else { // this is night time
+          this.current = 'night';
+          if (this.selectedTheme === 'light-theme') {
+            this.autoTheme();
+            console.log('its night turn to dark theme')
+          }
         }
-      } else { // this is night time
-        this.current = 'night';
-        if (this.selectedTheme === 'light-theme') {
-          this.autoTheme();
-        }
-      }
-      console.log(this.current + currDate + this.weather['srh'] + this.weather['ssth']);
-    });
+        //console.log(this.current + ' current hour: ' + currDate + ' sunrise: ' + this.sunriseLoad['srh'] + ' sunset: '+ this.sunriseLoad['ssth']);
 }
 
 autoTheme() {
@@ -124,11 +139,13 @@ autoTheme() {
     this.isToggled = true;
     this.header['button'] = { 'background-color': 'transparent', 'color': 'white' };
     this.header['backgd'] = { 'background-color': '#333333' };
+    console.log('isToggled ' + this.isToggled)
   } else {
     this.settings.setActiveTheme('light-theme');
     this.isToggled = false;
     this.header['button'] = { 'background-color': 'transparent' };
     this.header['backgd'] = { 'background-color': '#FFFFFF' };
+    console.log('isToggled ' + this.isToggled)
   }
 }
 
@@ -155,8 +172,31 @@ autoTheme() {
     console.log(this.selectedMode)
   }
 
+  checkNewForecast(){
+    let currDate = moment.unix(Math.round(new Date().getTime()/1000)).format('HH');
+    let diffDate = moment.unix(this.forecastRecTime).format('HH');
+    //console.log('currDate', currDate)
+    //console.log('diffDate', diffDate)
+    if (currDate != diffDate) { 
+      this.apiProvider.getForecast().subscribe(data => { 
+        this.settings.updateForecastData(data);
+        console.log('its time to get new forecast')
+      });
+    }
+  }
+
   exitApp() {
     navigator['app'].exitApp();
   }
+
+    // Check if it's night or day and automaticly change the theme on each view init
+    ngAfterViewInit() {
+      this.nav.viewDidEnter.subscribe((data) => {
+       if (this.selectedMode === 'auto' && this.sunriseLoad != null) {
+            this.checkSunrise();
+        }
+      });
+      console.log('after view init')
+    }
 
 }

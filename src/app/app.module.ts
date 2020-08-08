@@ -12,6 +12,7 @@ import { SettingsProvider } from '../providers/settings/settings';
 import { ApiProvider } from '../providers/api/api';
 import { HttpModule } from '@angular/http'; // Import HttpModule
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+//import { PreloadProvider } from '../providers/preload/preload';
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
   hostname: 'iot.correns.org',
@@ -23,7 +24,16 @@ export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
 export function mqttServiceFactory() {
   return new MqttService(MQTT_SERVICE_OPTIONS);
 }
-
+/*
+export function loadProviderFactory(provider: PreloadProvider) {
+  if (navigator.onLine) {
+    return () => provider.load();
+  } else {
+    console.log('network disconnected')
+    alert("Vous êtes déconnecté, veuillez activer le réseau et appuyer sur la touche précédent.")
+  }
+}
+*/
 @NgModule({
   declarations: [
     MyApp,
@@ -48,7 +58,9 @@ export function mqttServiceFactory() {
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SettingsProvider,
-    ApiProvider
+    ApiProvider,
+    //PreloadProvider,
+    //{ provide: APP_INITIALIZER, useFactory: loadProviderFactory, deps: [PreloadProvider], multi: true }
   ]
 })
 export class AppModule {}

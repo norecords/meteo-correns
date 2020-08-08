@@ -7,6 +7,7 @@ import { HttpModule } from '@angular/http'; // Import HttpModule
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SettingsProvider } from "../../providers/settings/settings";
 
+
 @NgModule({
   declarations: [
     HomePage,

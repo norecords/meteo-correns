@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams, Slides } from 'ionic-angular';
-import { ApiProvider } from '../../providers/api/api';
+import { SettingsProvider } from '../../providers/settings/settings';
 
 @IonicPage()
 @Component({
@@ -20,7 +20,8 @@ export class ForecastPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public loadingCtrl: LoadingController,
-              private apiProvider: ApiProvider) {}
+              private settings: SettingsProvider
+              ) {}
   
   public goToSlide(num) {
     this.slides.slideTo(num, 500);
@@ -59,63 +60,39 @@ export class ForecastPage {
     if (previousIndex == 10 && currentIndex < 9) this.selected[9] = 0
   }
 
-    // colorize outTemp class span
-    public temp_colorize(temp) {
-      if ( temp <= 0 ) {
-          var color = "#1278c8";
-      } else if ( temp <= -3.8 ) {
-        color = "#30bfef";
-      } else if ( temp <= 0 ) {
-        color = "#1fafdd";
-      } else if ( temp <= 4.4 ) {
-        color = "rgba(0,172,223,1)";
-      } else if ( temp <= 10 ) {
-        color = "#71bc3c";
-      } else if ( temp <= 12.7 ) {
-        color = "rgba(90,179,41,0.8)";
-      } else if ( temp <= 18.3 ) {
-        color = "rgba(131,173,45,1)";
-      } else if ( temp <= 21.1 ) {
-        color = "rgba(206,184,98,1)";
-      } else if ( temp <= 23.8 ) {
-        color = "rgba(255,174,0,0.9)";
-      } else if ( temp <= 26.6 ) {
-        color = "rgba(255,153,0,0.9)";
-      } else if ( temp <= 29.4 ) {
-        color = "rgba(255,127,0,1)";
-      } else if ( temp <= 32.2 ) {
-        color = "rgba(255,79,0,0.9)";
-      } else if ( temp <= 35 ) {
-        color = "rgba(255,69,69,1)";
-      } else if ( temp <= 43.3 ) {
-        color = "rgba(255,104,104,1)";
-      } else if ( temp >= 43.4 ) {
-        color = "rgba(218,113,113,1)";
-      }
-      //console.log(color)
-      return color;
-    }
+  // colorize outTemp class span
+  public temp_colorize(temp) {
+    let color;
+    if ( temp <= 0 ) color = "#1278c8";
+    else if ( temp <= -3.8 ) color = "#30bfef";
+    else if ( temp <= 0 ) color = "#1fafdd";
+    else if ( temp <= 4.4 ) color = "rgba(0,172,223,1)";
+    else if ( temp <= 10 ) color = "#71bc3c";
+    else if ( temp <= 12.7 ) color = "rgba(90,179,41,0.8)";
+    else if ( temp <= 18.3 ) color = "rgba(131,173,45,1)";
+    else if ( temp <= 21.1 ) color = "rgba(206,184,98,1)";
+    else if ( temp <= 23.8 ) color = "rgba(255,174,0,0.9)";
+    else if ( temp <= 26.6 ) color = "rgba(255,153,0,0.9)";
+    else if ( temp <= 29.4 ) color = "rgba(255,127,0,1)";
+    else if ( temp <= 32.2 ) color = "rgba(255,79,0,0.9)";
+    else if ( temp <= 35 ) color = "rgba(255,69,69,1)";
+    else if ( temp <= 43.3 ) color = "rgba(255,104,104,1)";
+    else if ( temp >= 43.4 ) color = "rgba(218,113,113,1)";
+    //console.log(color)
+    return color;
+  }
 
   ionViewDidLoad() {
  
-    let loader = this.loadingCtrl.create({
-      content: '<h2>Chargement des données</h2>Téléchargement en cours...',
-      duration: 20000,
-      cssClass: 'custom-loader-class'
-    });
-    loader.present()
+    this.settings.getForecastData().subscribe(data => {
+      this.weather = data; });
 
-    this.apiProvider.getForecast().subscribe(data => { 
-      this.weather = data 
        // Short date
        for(let i = 0; i < this.weather['date'].length; i++) {
         this.day.push(this.weather['date'][i]['short']);
         this.symbol.push('<img class="Ficon" src="assets/imgs/yr/' + this.weather['date'][i]['symbol'] + '.png">')
       }
-      setTimeout(() => {
-        loader.dismiss();
-      }, 500);
-    });
+
     console.log('ionViewDidLoad ForecastPage');
   }
 

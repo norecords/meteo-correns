@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { ApiProvider } from '../../providers/api/api';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subscription } from 'rxjs/Subscription';
@@ -18,32 +18,30 @@ import 'moment/locale/fr';
 export class HomePage {
   mqttOnConnect: any;
   loop = []; // mqtt loop
-  weather = []; // json array  
   live = []; // live array
   summaries = []; // summaries array
-  loading: string; // loader
   dateTime : any; // use to convert unix epoch to date
   networkStatus : boolean;
   alerts : boolean = false;
   showAlerts: String;
-  public toastMsgs: any = [];
+  toastMsgs: any = [];
   iconAlert = faExclamationTriangle;
   iconDown = faAngleDown;
   iconUp = faAngleUp;
+  liveCache = []
 
-// private toastInstance: Toast;
   private subs : Subscription;   // MQTT sub
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
-              public loadingCtrl: LoadingController,
               public toastCtrl : ToastController,
               public network : Network, 
               private apiProvider: ApiProvider,
               private mqttService: MqttService,
               private settings: SettingsProvider) {
-
+                
     this.settings.getActiveAlertsDisplay().subscribe(val => this.showAlerts = val);
+
 
     this.network.onDisconnect().subscribe(() => {
       console.log('network disconnected')
@@ -198,101 +196,83 @@ private rotateThis(newRotation) {
   public toggleAlerts() {
     if (this.showAlerts === 'true') {
       this.settings.setActiveAlertsDisplay('false');
-      //this.showAlerts = 'false';
-      console.log(this.showAlerts)
+      //console.log(this.showAlerts)
     } else {
       this.settings.setActiveAlertsDisplay('true');
-      //this.showAlerts = 'true';
-      console.log(this.showAlerts)
+      //console.log(this.showAlerts)
     }
-    //return this.showAlerts
   }
 
   // load main Json
   private loadJson() {
-    let loader = this.loadingCtrl.create({
-      content: '<h2>Chargement des données</h2>Téléchargement en cours...',
-      duration: 20000
-    });
-    loader.present()
-
     this.apiProvider.getLive().subscribe(data => { 
-      this.weather = data;
-        this.dateTime = this.weather['current']['datetime_raw'];
+        this.dateTime = data['current']['datetime_raw'];
         this.live['dateTime'] = moment.unix(this.dateTime).format('dddd Do MMMM YYYY LTS');
-        this.live['outTemp_C'] = this.weather['current']['outTemp_formatted'] + "<sup class='outtempunitlabelsuper'>°C</sup>";
-        this.live['outTempColor'] = this.temp_colorize(parseFloat(this.weather['current']['outTemp_formatted']));
-        this.live['appTemp_C'] = 'Ressenti: ' + this.weather['current']['appTemp'];
-        this.live['windSpeed_kph'] = this.weather['current']['windSpeed'];
-        this.live['windCompass'] = this.weather['current']['windCompass'];
-        this.live['windDir'] = this.weather['current']['windDir'];
-        this.live['windArrow'] =  "rotate(" + this.rotateThis(this.weather['current']['winddir_formatted']) + 'deg)';
-        this.live['windGust_kph']  = this.weather['current']['windGust'];
-        this.live['barometer_mbar'] = this.weather['current']['barometer'];
-        this.live['dewpoint_C'] = this.weather['current']['dewpoint'];
-        this.live['outHumidity'] = this.weather['current']['outHumidity'];
-        //this.live['dayRain_cm'] = this.weather['current']['rain'];
-        this.live['dayRain_cm'] = this.weather['day']['rainSum'];
-        this.live['rainRate_cm_per_hour'] = this.weather['current']['rainRate'];
-        this.live['UV'] = this.weather['current']['uv'];
-        this.live['cloudbase'] = this.weather['current']['cloudbase'];
+        this.live['outTemp_C'] = data['current']['outTemp_formatted'] + "<sup class='outtempunitlabelsuper'>°C</sup>";
+        this.live['outTempColor'] = this.temp_colorize(parseFloat(data['current']['outTemp_formatted']));
+        this.live['appTemp_C'] = 'Ressenti: ' + data['current']['appTemp'];
+        this.live['windSpeed_kph'] = data['current']['windSpeed'];
+        this.live['windCompass'] = data['current']['windCompass'];
+        this.live['windDir'] = data['current']['windDir'];
+        this.live['windArrow'] =  "rotate(" + this.rotateThis(data['current']['winddir_formatted']) + 'deg)';
+        this.live['windGust_kph']  = data['current']['windGust'];
+        this.live['barometer_mbar'] = data['current']['barometer'];
+        this.live['dewpoint_C'] = data['current']['dewpoint'];
+        this.live['outHumidity'] = data['current']['outHumidity'];
+        this.live['dayRain_cm'] = data['day']['rainSum'];
+        this.live['rainRate_cm_per_hour'] = data['current']['rainRate'];
+        this.live['UV'] = data['current']['uv'];
+        this.live['cloudbase'] = data['current']['cloudbase'];
         this.summaries['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
         this.summaries['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
-        this.summaries['visibility'] = this.weather['current']['visibility'];
-        this.summaries['icon'] = this.checkSummariesIcon(this.weather['current']['icon']);
-        this.summaries['currentText'] = this.weather['current']['summary'];
-        this.summaries['dayOutTempMax'] = this.weather['day']['outTempMax'];
-        this.summaries['dayOutTempMin'] = this.weather['day']['outTempMin'];
-        this.summaries['dayWindAvg'] = this.weather['day']['windAvg'];
-        this.summaries['dayWindMax'] = this.weather['day']['windMax'];
-        this.summaries['dayRainSum'] = this.weather['day']['rainSum'];
-        this.summaries['dayRainRateMax'] = this.weather['day']['rainRateMax'];
-        this.summaries['monthOutTempMax'] = this.weather['month']['outTempMax'];
-        this.summaries['monthOutTempMin'] = this.weather['month']['outTempMin'];
-        this.summaries['monthWindAvg'] = this.weather['month']['windAvg'];
-        this.summaries['monthWindMax'] = this.weather['month']['windMax'];
-        this.summaries['monthRainSum'] = this.weather['month']['rainSum'];
-        this.summaries['monthRainRateMax'] = this.weather['month']['rainRateMax'];
-        if (this.weather['alerts'] != null) {
+        this.summaries['visibility'] = data['current']['visibility'];
+        this.summaries['icon'] = this.checkSummariesIcon(data['current']['icon']);
+        this.summaries['currentText'] = data['current']['summary'];
+        this.summaries['dayOutTempMax'] = data['day']['outTempMax'];
+        this.summaries['dayOutTempMin'] = data['day']['outTempMin'];
+        this.summaries['dayWindAvg'] = data['day']['windAvg'];
+        this.summaries['dayWindMax'] = data['day']['windMax'];
+        this.summaries['dayRainSum'] = data['day']['rainSum'];
+        this.summaries['dayRainRateMax'] = data['day']['rainRateMax'];
+        this.summaries['monthOutTempMax'] = data['month']['outTempMax'];
+        this.summaries['monthOutTempMin'] = data['month']['outTempMin'];
+        this.summaries['monthWindAvg'] = data['month']['windAvg'];
+        this.summaries['monthWindMax'] = data['month']['windMax'];
+        this.summaries['monthRainSum'] = data['month']['rainSum'];
+        this.summaries['monthRainRateMax'] = data['month']['rainRateMax'];
+        if (data['alerts'] != null) {
          this.alerts = true;
-          this.summaries['alerts'] = this.weather['alerts'];
+          this.summaries['alerts'] = data['alerts'];
           console.log('alerts : ' + this.alerts)
-        }
-      // Dismiss loader
-      if (this.weather['current']['datetime_raw'] =! null) {
-        setTimeout(() => {
-          loader.dismiss();
-        }, 1000);
-      }
-    });   
+        }      
+      });
   }
 
   // Reload summaries every 5 minutes
   private reloadJson() {
     setInterval(() => {
       this.apiProvider.getLive().subscribe(data => { 
-        this.weather = data;
-          this.dateTime = this.weather['current']['datetime_raw'];
+          this.dateTime = data['current']['datetime_raw'];
           this.summaries['dateToday'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('dddd Do MMMM YYYY'));
           this.summaries['dateMonth'] = this.capitalizeFirstLetter(moment.unix(this.dateTime).format('MMMM YYYY'));
-          this.summaries['icon'] = this.checkSummariesIcon(this.weather['current']['icon']);
-          this.summaries['currentText'] = this.weather['current']['summary'];
-          this.summaries['visibility'] = this.weather['current']['visibility'];
-          this.summaries['dayOutTempMax'] = this.weather['day']['outTempMax'];
-          this.summaries['dayOutTempMin'] = this.weather['day']['outTempMin'];
-          this.summaries['dayWindAvg'] = this.weather['day']['windAvg'];
-          this.summaries['dayWindMax'] = this.weather['day']['windMax'];
-          this.summaries['dayRainSum'] = this.weather['day']['rainSum'];
-          this.summaries['dayRainRateMax'] = this.weather['day']['rainRateMax'];
-          this.summaries['monthOutTempMax'] = this.weather['month']['outTempMax'];
-          this.summaries['monthOutTempMin'] = this.weather['month']['outTempMin'];
-          this.summaries['monthWindAvg'] = this.weather['month']['windAvg'];
-          this.summaries['monthWindMax'] = this.weather['month']['windMax'];
-          this.summaries['monthRainSum'] = this.weather['month']['rainSum'];
-          this.summaries['monthRainRateMax'] = this.weather['month']['rainRateMax'];
-          if (this.weather['alerts'] != null) {
+          this.summaries['icon'] = this.checkSummariesIcon(data['current']['icon']);
+          this.summaries['currentText'] = data['current']['summary'];
+          this.summaries['visibility'] = data['current']['visibility'];
+          this.summaries['dayOutTempMax'] = data['day']['outTempMax'];
+          this.summaries['dayOutTempMin'] = data['day']['outTempMin'];
+          this.summaries['dayWindAvg'] = data['day']['windAvg'];
+          this.summaries['dayWindMax'] = data['day']['windMax'];
+          this.summaries['dayRainSum'] = data['day']['rainSum'];
+          this.summaries['dayRainRateMax'] = data['day']['rainRateMax'];
+          this.summaries['monthOutTempMax'] = data['month']['outTempMax'];
+          this.summaries['monthOutTempMin'] = data['month']['outTempMin'];
+          this.summaries['monthWindAvg'] = data['month']['windAvg'];
+          this.summaries['monthWindMax'] = data['month']['windMax'];
+          this.summaries['monthRainSum'] = data['month']['rainSum'];
+          this.summaries['monthRainRateMax'] = data['month']['rainRateMax'];
+          if (data['alerts'] != null) {
             this.alerts = true;
-             this.summaries['alerts'] = this.weather['alerts'];
+             this.summaries['alerts'] = data['alerts'];
              console.log('alerts : ' + this.alerts)
            } else {
             this.alerts = false;
@@ -362,6 +342,7 @@ private rotateThis(newRotation) {
     ); // end of subs
   }
 
+
   ionViewDidLoad() {
 
     if (this.networkStatus === true) {
@@ -386,6 +367,6 @@ private rotateThis(newRotation) {
       console.log('MQTT unsubscribed');
       }
   }
-
+  
 
 }

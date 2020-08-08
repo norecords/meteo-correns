@@ -36,60 +36,63 @@
 </ion-header>
 
 <ion-content>
-
-  <div *ngIf="alerts">
-    <ion-card *ngIf="showAlerts==='true'">
-      <ion-card-content>
-        <div class="crd">
-          <div class="crd-content">
-            <table>
-              <tr *ngFor="let item of summaries['alerts']">
-                <td>
-                  <h2 [style.color]="alertsColorize(item.title)"><fa-icon [icon]="iconAlert" pull="left" ></fa-icon>
-                    {{item.title}}</h2>
-                    Bulletin mis à jour <span [innerHTML]="momentAlerts(item.time,'from')"></span>, valable jusqu'au <span [innerHTML]="momentAlerts(item.expires,'to')">.</span>
-                </td>
-                <td>
-                  <!-- empty -->
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td style="text-align:right">
-                  <button ion-button icon-only [style.background-color]="'transparent'" (click)="toggleAlerts()">
-                    <fa-icon [icon]="iconUp" size="2x"></fa-icon>
-                  </button>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card *ngIf="showAlerts==='false'">
-      <ion-card-content>
-        <div class="crd">
-          <table>
-            <tr>
-              <td>
-                <h2 [style.color]="danger"><fa-icon [icon]="iconAlert" pull="left"></fa-icon>
-                  Des vigilances sont en cours.
-                </h2>
-              </td>
-              <td style="text-align:right">
-                <button ion-button icon-only [style.background-color]="'transparent'" (click)="toggleAlerts()">
-                  <fa-icon [icon]="iconDown" size="2x"></fa-icon>
-                </button>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-  </div>
-
+  <ion-grid *ngIf="alerts" no-padding>
+    <ion-row>
+      <ion-col col-sm-12 col-md-12 col-lg-12>
+        <ion-card *ngIf="showAlerts==='true'" >
+          <ion-card-content>
+            <div class="crd">
+              <div class="crd-content">
+                <table>
+                  <tr *ngFor="let item of summaries['alerts']">
+                    <td>
+                      <h2 [style.color]="alertsColorize(item.title)"><fa-icon [icon]="iconAlert" pull="left" ></fa-icon>
+                        {{item.title}}</h2>
+                        Bulletin émis <span [innerHTML]="momentAlerts(item.time,'from')"></span>, valable jusqu'au <span [innerHTML]="momentAlerts(item.expires,'to')">.</span>
+                    </td>
+                    <td>
+                      <!-- empty -->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <!-- empty -->
+                    </td>
+                    <td style="text-align:right">
+                      <button class="alertsButton" icon-only (click)="toggleAlerts()">
+                        <fa-icon [icon]="iconUp" size="2x"></fa-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+    
+        <ion-card *ngIf="showAlerts==='false'">
+          <ion-card-content>
+            <div class="crd">
+              <table>
+                <tr>
+                  <td>
+                    <h2 [style.color]="danger"><fa-icon [icon]="iconAlert" pull="left"></fa-icon>
+                      Des vigilances sont en cours.
+                    </h2>
+                  </td>
+                  <td style="text-align:right">
+                    <button class="alertsButton" icon-only (click)="toggleAlerts()">
+                      <fa-icon [icon]="iconDown" size="2x"></fa-icon>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid> <!-- if Alerts -->
 
 <ion-grid no-padding>
   <ion-row>

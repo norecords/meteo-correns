@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
-import { ApiProvider } from '../../providers/api/api' // Import our provider. Also included in charts.module.ts file
+import { ApiProvider } from '../../providers/api/api' // Import our provider. Also included in charts-week.module.ts file
 import * as HighStock from 'highcharts/highstock';
 import * as moment from 'moment';
 import 'moment/locale/fr';
@@ -14,27 +14,32 @@ import 'moment/locale/fr';
 export class ChartsPage {
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              public loadingCtrl: LoadingController,
-              private apiProvider: ApiProvider) {}
+    public navParams: NavParams,
+    public loadingCtrl: LoadingController,
+    private apiProvider: ApiProvider) {}
 
-  data: void;
-  dateTime : number;
-  longTitle : string;
-  shortTitle : string;
-  weather = [];
+    data: void;
+    dateTime : number;
+    longTitle : string;
+    shortTitle : string;
+    weather = [];
+    lastDateTime: any = [];
 
-  ionViewDidLoad() {
+    ionViewDidLoad() {
 
-    let loader = this.loadingCtrl.create({
-        content: '<h2>Chargement des données</h2>Téléchargement en cours...',
-        duration: 20000
-      });
-      loader.present()
+      let loader = this.loadingCtrl.create({
+          content: '<h2>Chargement des données</h2>Téléchargement en cours...',
+          duration: 20000
+        });  
+        loader.present()
+  
+        this.apiProvider.getJsonDayCharts().subscribe(data => { 
+          this.weather = data;
+          console.log(this.weather);
 
-      this.apiProvider.getJsonDayCharts().subscribe(data => { 
-        this.weather = data;
-        console.log(this.weather);
+
+
+        //console.log(this.weather);
    
         let outTemp = [];
         let dewpoint = [];
@@ -111,11 +116,12 @@ export class ChartsPage {
           setTimeout(() => {
             loader.dismiss();
           }, 500);
-          }
+        }
           this.data = this.showHighchart(outTemp,dewpoint,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,UV,this.shortTitle,this.longTitle)
   
         });
   }
+  
   showHighchart(outTemp,dewpoint,windDir,windGust,windSpeed,rainRate,rainTotal,barometer,UV,shortTitle,longTitle){
   
   

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, LoadingController, NavController, NavParams, Content } from 'ionic-angular';
-import { ApiProvider } from '../../providers/api/api'; // API provider
+import { IonicPage, NavController, NavParams, Content } from 'ionic-angular';
+import { SettingsProvider } from '../../providers/settings/settings';
 
 @IonicPage()
 @Component({
@@ -21,19 +21,14 @@ export class AlmanacPage {
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
-              public loadingCtrl: LoadingController,
-              private apiProvider: ApiProvider) {}
+              private settings: SettingsProvider
+              ) {}
 
   ionViewDidLoad() {
+     this.settings.getAlmanacData().subscribe(data => {
+       this.weather = data; });
+    
 
-    let loader = this.loadingCtrl.create({
-      content: '<h2>Chargement des données</h2>Téléchargement en cours...',
-      duration : 20000
-    });
-    loader.present()
-
-    this.apiProvider.getJsonAlmanach().subscribe(data => { 
-      this.weather = data;
       this.sun['startCivilTwilight'] = this.weather['sun']['startCivilTwilight']
       this.sun['sunrise'] = this.weather['sun']['sunrise']
       this.sun['transit'] = this.weather['sun']['transit']
@@ -57,9 +52,6 @@ export class AlmanacPage {
       this.moon['newMoon'] = this.weather['moon']['newMoon']
       this.moon['phase'] = this.weather['moon']['phase']
       this.moon['fullness'] = this.weather['moon']['fullness']
-      setTimeout(() => {
-        loader.dismiss();
-      }, 500);    }); 
 
     console.log('ionViewDidLoad AlmanacPage');
   }
