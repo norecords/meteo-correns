@@ -141,7 +141,7 @@ autoTheme() {
     this.header['backgd'] = { 'background-color': '#333333' };
     console.log('isToggled ' + this.isToggled)
   } 
-  if (this.selectedTheme === 'dark-theme' && this.selectedMode != 'manual'){
+  else if(this.selectedTheme === 'dark-theme' && this.selectedMode != 'manual'){
     this.settings.setActiveTheme('light-theme');
     console.log('its daylight turn to light theme')
     this.isToggled = false;

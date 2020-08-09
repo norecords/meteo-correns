@@ -12,63 +12,63 @@ export class ApiProvider {
   constructor(private http: Http) { }
 // https://meteo.correns.org/api/app.php?q=live
   getLive() {
-    return this.http.get('https://meteo.correns.org/api/app.php?q=weewxdata')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=weewxdata')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getJsonDayCharts(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=chartsday')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=chartsday')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getJsonWeekCharts(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=chartsweek')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=chartsweek')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getJsonMonthCharts(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=monthcharts')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=monthcharts')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getJsonYearCharts(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=yearcharts')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=yearcharts')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getForecast(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=forecast')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=forecast')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getJsonAlmanach(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=almanach')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=almanach')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getJsonAbout(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=about')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=about')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
   }
 
   getJsonSunrise(){
-    return this.http.get('https://meteo.correns.org/api/app.php?q=sunrise')
+    return this.http.get('https://meteo.correns.org/api/v1/app.php?q=sunrise')
     .map(this.extractData)
     .do(this.logResponse)
     .catch(this.catchError)
