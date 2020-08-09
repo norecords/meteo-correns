@@ -121,27 +121,29 @@ checkSunrise() {
           this.current = 'day'; // set daylight
           if (this.selectedTheme === 'dark-theme') {
             this.autoTheme();
-            console.log('its daylight turn to light theme')
           }
         } else { // this is night time
           this.current = 'night';
           if (this.selectedTheme === 'light-theme') {
             this.autoTheme();
-            console.log('its night turn to dark theme')
           }
         }
+        console.log('check daylight state')
         //console.log(this.current + ' current hour: ' + currDate + ' sunrise: ' + this.sunriseLoad['srh'] + ' sunset: '+ this.sunriseLoad['ssth']);
 }
 
 autoTheme() {
-  if (this.selectedTheme === 'light-theme') {
+  if (this.selectedTheme === 'light-theme' && this.selectedMode != 'manual') {
     this.settings.setActiveTheme('dark-theme');
+    console.log('its night turn to dark theme')
     this.isToggled = true;
     this.header['button'] = { 'background-color': 'transparent', 'color': 'white' };
     this.header['backgd'] = { 'background-color': '#333333' };
     console.log('isToggled ' + this.isToggled)
-  } else {
+  } 
+  if (this.selectedTheme === 'dark-theme' && this.selectedMode != 'manual'){
     this.settings.setActiveTheme('light-theme');
+    console.log('its daylight turn to light theme')
     this.isToggled = false;
     this.header['button'] = { 'background-color': 'transparent' };
     this.header['backgd'] = { 'background-color': '#FFFFFF' };
