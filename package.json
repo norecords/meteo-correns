@@ -31,7 +31,7 @@
     "cordova-android": "^9.0.0",
     "cordova-plugin-proguard": "^2.1.0",
     "handlebars": "^4.0.11",
-    "highcharts": "8.1.0",
+    "highcharts": "8.2.0",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
     "moment": "^2.24.0",
