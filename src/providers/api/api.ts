@@ -10,7 +10,7 @@ import 'rxjs/add/observable/throw';
 export class ApiProvider {
 
   constructor(private http: Http) { }
-// https://meteo.correns.org/api/app.php?q=live
+
   getLive() {
     return this.http.get('https://meteo.correns.org/api/v1/app.php?q=weewxdata')
     .map(this.extractData)
